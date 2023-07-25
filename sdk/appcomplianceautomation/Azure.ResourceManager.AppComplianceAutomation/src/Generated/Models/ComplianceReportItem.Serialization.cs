@@ -5,6 +5,7 @@
 
 #nullable disable
 
+using System;
 using System.Text.Json;
 using Azure.Core;
 
@@ -19,23 +20,27 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                 return null;
             }
             Optional<string> categoryName = default;
+            Optional<string> controlFamilyName = default;
             Optional<string> controlId = default;
             Optional<string> controlName = default;
-            Optional<ControlType> controlType = default;
-            Optional<ComplianceState> complianceState = default;
-            Optional<string> policyId = default;
-            Optional<string> policyDisplayName = default;
-            Optional<string> policyDescription = default;
-            Optional<string> subscriptionId = default;
-            Optional<string> resourceGroup = default;
-            Optional<string> resourceType = default;
+            Optional<ControlStatus> controlStatus = default;
+            Optional<string> responsibilityTitle = default;
+            Optional<string> responsibilityDescription = default;
             Optional<string> resourceId = default;
-            Optional<string> statusChangeDate = default;
+            Optional<string> resourceType = default;
+            Optional<ResourceOrigin> resourceOrigin = default;
+            Optional<ResourceStatus> resourceStatus = default;
+            Optional<DateTimeOffset> resourceStatusChangeDate = default;
             foreach (var property in element.EnumerateObject())
             {
                 if (property.NameEquals("categoryName"u8))
                 {
                     categoryName = property.Value.GetString();
+                    continue;
+                }
+                if (property.NameEquals("controlFamilyName"u8))
+                {
+                    controlFamilyName = property.Value.GetString();
                     continue;
                 }
                 if (property.NameEquals("controlId"u8))
@@ -48,52 +53,23 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                     controlName = property.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("controlType"u8))
+                if (property.NameEquals("controlStatus"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    controlType = new ControlType(property.Value.GetString());
+                    controlStatus = new ControlStatus(property.Value.GetString());
                     continue;
                 }
-                if (property.NameEquals("complianceState"u8))
+                if (property.NameEquals("responsibilityTitle"u8))
                 {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    complianceState = new ComplianceState(property.Value.GetString());
+                    responsibilityTitle = property.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("policyId"u8))
+                if (property.NameEquals("responsibilityDescription"u8))
                 {
-                    policyId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("policyDisplayName"u8))
-                {
-                    policyDisplayName = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("policyDescription"u8))
-                {
-                    policyDescription = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("subscriptionId"u8))
-                {
-                    subscriptionId = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("resourceGroup"u8))
-                {
-                    resourceGroup = property.Value.GetString();
-                    continue;
-                }
-                if (property.NameEquals("resourceType"u8))
-                {
-                    resourceType = property.Value.GetString();
+                    responsibilityDescription = property.Value.GetString();
                     continue;
                 }
                 if (property.NameEquals("resourceId"u8))
@@ -101,13 +77,40 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                     resourceId = property.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("statusChangeDate"u8))
+                if (property.NameEquals("resourceType"u8))
                 {
-                    statusChangeDate = property.Value.GetString();
+                    resourceType = property.Value.GetString();
+                    continue;
+                }
+                if (property.NameEquals("resourceOrigin"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    resourceOrigin = new ResourceOrigin(property.Value.GetString());
+                    continue;
+                }
+                if (property.NameEquals("resourceStatus"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    resourceStatus = new ResourceStatus(property.Value.GetString());
+                    continue;
+                }
+                if (property.NameEquals("resourceStatusChangeDate"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    resourceStatusChangeDate = property.Value.GetDateTimeOffset("O");
                     continue;
                 }
             }
-            return new ComplianceReportItem(categoryName.Value, controlId.Value, controlName.Value, Optional.ToNullable(controlType), Optional.ToNullable(complianceState), policyId.Value, policyDisplayName.Value, policyDescription.Value, subscriptionId.Value, resourceGroup.Value, resourceType.Value, resourceId.Value, statusChangeDate.Value);
+            return new ComplianceReportItem(categoryName.Value, controlFamilyName.Value, controlId.Value, controlName.Value, Optional.ToNullable(controlStatus), responsibilityTitle.Value, responsibilityDescription.Value, resourceId.Value, resourceType.Value, Optional.ToNullable(resourceOrigin), Optional.ToNullable(resourceStatus), Optional.ToNullable(resourceStatusChangeDate));
         }
     }
 }

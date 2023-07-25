@@ -19,33 +19,23 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             {
                 return null;
             }
-            Optional<string> familyName = default;
-            Optional<ControlFamilyType> familyType = default;
-            Optional<ControlFamilyStatus> familyStatus = default;
+            Optional<string> controlFamilyName = default;
+            Optional<ControlFamilyStatus> controlFamilyStatus = default;
             Optional<IReadOnlyList<Control>> controls = default;
             foreach (var property in element.EnumerateObject())
             {
-                if (property.NameEquals("familyName"u8))
+                if (property.NameEquals("controlFamilyName"u8))
                 {
-                    familyName = property.Value.GetString();
+                    controlFamilyName = property.Value.GetString();
                     continue;
                 }
-                if (property.NameEquals("familyType"u8))
+                if (property.NameEquals("controlFamilyStatus"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
                     {
                         continue;
                     }
-                    familyType = new ControlFamilyType(property.Value.GetString());
-                    continue;
-                }
-                if (property.NameEquals("familyStatus"u8))
-                {
-                    if (property.Value.ValueKind == JsonValueKind.Null)
-                    {
-                        continue;
-                    }
-                    familyStatus = new ControlFamilyStatus(property.Value.GetString());
+                    controlFamilyStatus = new ControlFamilyStatus(property.Value.GetString());
                     continue;
                 }
                 if (property.NameEquals("controls"u8))
@@ -63,7 +53,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                     continue;
                 }
             }
-            return new ControlFamily(familyName.Value, Optional.ToNullable(familyType), Optional.ToNullable(familyStatus), Optional.ToList(controls));
+            return new ControlFamily(controlFamilyName.Value, Optional.ToNullable(controlFamilyStatus), Optional.ToList(controls));
         }
     }
 }

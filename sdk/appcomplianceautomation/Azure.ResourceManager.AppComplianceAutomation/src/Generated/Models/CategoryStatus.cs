@@ -22,13 +22,19 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             _value = value ?? throw new ArgumentNullException(nameof(value));
         }
 
-        private const string HealthyValue = "Healthy";
-        private const string UnhealthyValue = "Unhealthy";
+        private const string PassedValue = "Passed";
+        private const string FailedValue = "Failed";
+        private const string NotApplicableValue = "NotApplicable";
+        private const string PendingApprovalValue = "PendingApproval";
 
-        /// <summary> Healthy. </summary>
-        public static CategoryStatus Healthy { get; } = new CategoryStatus(HealthyValue);
-        /// <summary> Unhealthy. </summary>
-        public static CategoryStatus Unhealthy { get; } = new CategoryStatus(UnhealthyValue);
+        /// <summary> Passed. </summary>
+        public static CategoryStatus Passed { get; } = new CategoryStatus(PassedValue);
+        /// <summary> Failed. </summary>
+        public static CategoryStatus Failed { get; } = new CategoryStatus(FailedValue);
+        /// <summary> NotApplicable. </summary>
+        public static CategoryStatus NotApplicable { get; } = new CategoryStatus(NotApplicableValue);
+        /// <summary> PendingApproval. </summary>
+        public static CategoryStatus PendingApproval { get; } = new CategoryStatus(PendingApprovalValue);
         /// <summary> Determines if two <see cref="CategoryStatus"/> values are the same. </summary>
         public static bool operator ==(CategoryStatus left, CategoryStatus right) => left.Equals(right);
         /// <summary> Determines if two <see cref="CategoryStatus"/> values are not the same. </summary>

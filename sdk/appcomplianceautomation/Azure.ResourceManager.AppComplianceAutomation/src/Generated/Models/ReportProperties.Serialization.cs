@@ -22,17 +22,31 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                 writer.WritePropertyName("offerGuid"u8);
                 writer.WriteStringValue(OfferGuid);
             }
-            writer.WritePropertyName("timeZone"u8);
-            writer.WriteStringValue(TimeZone);
-            writer.WritePropertyName("triggerTime"u8);
-            writer.WriteStringValue(TriggerOn, "O");
-            writer.WritePropertyName("resources"u8);
-            writer.WriteStartArray();
-            foreach (var item in Resources)
+            if (Optional.IsDefined(TimeZone))
             {
-                writer.WriteObjectValue(item);
+                writer.WritePropertyName("timeZone"u8);
+                writer.WriteStringValue(TimeZone);
             }
-            writer.WriteEndArray();
+            if (Optional.IsDefined(TriggerOn))
+            {
+                writer.WritePropertyName("triggerTime"u8);
+                writer.WriteStringValue(TriggerOn.Value, "O");
+            }
+            if (Optional.IsCollectionDefined(Resources))
+            {
+                writer.WritePropertyName("resources"u8);
+                writer.WriteStartArray();
+                foreach (var item in Resources)
+                {
+                    writer.WriteObjectValue(item);
+                }
+                writer.WriteEndArray();
+            }
+            if (Optional.IsDefined(StorageInfo))
+            {
+                writer.WritePropertyName("storageInfo"u8);
+                writer.WriteObjectValue(StorageInfo);
+            }
             writer.WriteEndObject();
         }
 
@@ -47,13 +61,15 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             Optional<Guid> tenantId = default;
             Optional<string> reportName = default;
             Optional<string> offerGuid = default;
-            string timeZone = default;
-            DateTimeOffset triggerTime = default;
+            Optional<string> timeZone = default;
+            Optional<DateTimeOffset> triggerTime = default;
             Optional<DateTimeOffset> nextTriggerTime = default;
             Optional<DateTimeOffset> lastTriggerTime = default;
             Optional<IReadOnlyList<string>> subscriptions = default;
-            IList<ResourceMetadata> resources = default;
+            Optional<IList<ResourceMetadata>> resources = default;
             Optional<ReportComplianceStatus> complianceStatus = default;
+            Optional<StorageInfo> storageInfo = default;
+            Optional<IReadOnlyList<CertSyncRecord>> certRecords = default;
             Optional<ProvisioningState> provisioningState = default;
             foreach (var property in element.EnumerateObject())
             {
@@ -97,6 +113,10 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                 }
                 if (property.NameEquals("triggerTime"u8))
                 {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     triggerTime = property.Value.GetDateTimeOffset("O");
                     continue;
                 }
@@ -134,6 +154,10 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                 }
                 if (property.NameEquals("resources"u8))
                 {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
                     List<ResourceMetadata> array = new List<ResourceMetadata>();
                     foreach (var item in property.Value.EnumerateArray())
                     {
@@ -151,6 +175,29 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                     complianceStatus = ReportComplianceStatus.DeserializeReportComplianceStatus(property.Value);
                     continue;
                 }
+                if (property.NameEquals("storageInfo"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    storageInfo = StorageInfo.DeserializeStorageInfo(property.Value);
+                    continue;
+                }
+                if (property.NameEquals("certRecords"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    List<CertSyncRecord> array = new List<CertSyncRecord>();
+                    foreach (var item in property.Value.EnumerateArray())
+                    {
+                        array.Add(CertSyncRecord.DeserializeCertSyncRecord(item));
+                    }
+                    certRecords = array;
+                    continue;
+                }
                 if (property.NameEquals("provisioningState"u8))
                 {
                     if (property.Value.ValueKind == JsonValueKind.Null)
@@ -161,7 +208,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                     continue;
                 }
             }
-            return new ReportProperties(id.Value, Optional.ToNullable(status), Optional.ToNullable(tenantId), reportName.Value, offerGuid.Value, timeZone, triggerTime, Optional.ToNullable(nextTriggerTime), Optional.ToNullable(lastTriggerTime), Optional.ToList(subscriptions), resources, complianceStatus.Value, Optional.ToNullable(provisioningState));
+            return new ReportProperties(id.Value, Optional.ToNullable(status), Optional.ToNullable(tenantId), reportName.Value, offerGuid.Value, timeZone.Value, Optional.ToNullable(triggerTime), Optional.ToNullable(nextTriggerTime), Optional.ToNullable(lastTriggerTime), Optional.ToList(subscriptions), Optional.ToList(resources), complianceStatus.Value, storageInfo.Value, Optional.ToList(certRecords), Optional.ToNullable(provisioningState));
         }
     }
 }

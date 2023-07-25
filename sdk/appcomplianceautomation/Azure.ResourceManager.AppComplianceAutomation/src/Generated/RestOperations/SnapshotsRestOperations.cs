@@ -33,11 +33,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             _pipeline = pipeline ?? throw new ArgumentNullException(nameof(pipeline));
             _endpoint = endpoint ?? new Uri("https://management.azure.com");
-            _apiVersion = apiVersion ?? "2022-11-16-preview";
+            _apiVersion = apiVersion ?? "2023-02-15-preview";
             _userAgent = new TelemetryDetails(GetType().Assembly, applicationId);
         }
 
-        internal HttpMessage CreateListRequest(string reportName, string skipToken, int? top, string select, string reportCreatorTenantId, string offerGuid)
+        internal HttpMessage CreateListRequest(string reportName, string skipToken, int? top, string select, string filter, string orderby, string reportCreatorTenantId, string offerGuid)
         {
             var message = _pipeline.CreateMessage();
             var request = message.Request;
@@ -60,6 +60,14 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             {
                 uri.AppendQuery("$select", select, true);
             }
+            if (filter != null)
+            {
+                uri.AppendQuery("$filter", filter, true);
+            }
+            if (orderby != null)
+            {
+                uri.AppendQuery("$orderby", orderby, true);
+            }
             if (reportCreatorTenantId != null)
             {
                 uri.AppendQuery("reportCreatorTenantId", reportCreatorTenantId, true);
@@ -79,16 +87,18 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="skipToken"> Skip over when retrieving results. </param>
         /// <param name="top"> Number of elements to return when retrieving results. </param>
         /// <param name="select"> OData Select statement. Limits the properties on each entry to just those requested, e.g. ?$select=reportName,id. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="orderby"> OData order by query option. </param>
         /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
         /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="reportName"/> is null. </exception>
         /// <exception cref="ArgumentException"> <paramref name="reportName"/> is an empty string, and was expected to be non-empty. </exception>
-        public async Task<Response<SnapshotResourceList>> ListAsync(string reportName, string skipToken = null, int? top = null, string select = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
+        public async Task<Response<SnapshotResourceList>> ListAsync(string reportName, string skipToken = null, int? top = null, string select = null, string filter = null, string orderby = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var message = CreateListRequest(reportName, skipToken, top, select, reportCreatorTenantId, offerGuid);
+            using var message = CreateListRequest(reportName, skipToken, top, select, filter, orderby, reportCreatorTenantId, offerGuid);
             await _pipeline.SendAsync(message, cancellationToken).ConfigureAwait(false);
             switch (message.Response.Status)
             {
@@ -109,16 +119,18 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="skipToken"> Skip over when retrieving results. </param>
         /// <param name="top"> Number of elements to return when retrieving results. </param>
         /// <param name="select"> OData Select statement. Limits the properties on each entry to just those requested, e.g. ?$select=reportName,id. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="orderby"> OData order by query option. </param>
         /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
         /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="reportName"/> is null. </exception>
         /// <exception cref="ArgumentException"> <paramref name="reportName"/> is an empty string, and was expected to be non-empty. </exception>
-        public Response<SnapshotResourceList> List(string reportName, string skipToken = null, int? top = null, string select = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
+        public Response<SnapshotResourceList> List(string reportName, string skipToken = null, int? top = null, string select = null, string filter = null, string orderby = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var message = CreateListRequest(reportName, skipToken, top, select, reportCreatorTenantId, offerGuid);
+            using var message = CreateListRequest(reportName, skipToken, top, select, filter, orderby, reportCreatorTenantId, offerGuid);
             _pipeline.Send(message, cancellationToken);
             switch (message.Response.Status)
             {
@@ -134,7 +146,156 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             }
         }
 
-        internal HttpMessage CreateListNextPageRequest(string nextLink, string reportName, string skipToken, int? top, string select, string reportCreatorTenantId, string offerGuid)
+        internal HttpMessage CreateGetRequest(string reportName, string snapshotName)
+        {
+            var message = _pipeline.CreateMessage();
+            var request = message.Request;
+            request.Method = RequestMethod.Get;
+            var uri = new RawRequestUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/providers/Microsoft.AppComplianceAutomation/reports/", false);
+            uri.AppendPath(reportName, true);
+            uri.AppendPath("/snapshots/", false);
+            uri.AppendPath(snapshotName, true);
+            uri.AppendQuery("api-version", _apiVersion, true);
+            request.Uri = uri;
+            request.Headers.Add("Accept", "application/json");
+            _userAgent.Apply(message);
+            return message;
+        }
+
+        /// <summary> Get the AppComplianceAutomation snapshot and its properties. </summary>
+        /// <param name="reportName"> Report Name. </param>
+        /// <param name="snapshotName"> Snapshot Name. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="reportName"/> or <paramref name="snapshotName"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="reportName"/> or <paramref name="snapshotName"/> is an empty string, and was expected to be non-empty. </exception>
+        public async Task<Response<SnapshotResourceData>> GetAsync(string reportName, string snapshotName, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
+            Argument.AssertNotNullOrEmpty(snapshotName, nameof(snapshotName));
+
+            using var message = CreateGetRequest(reportName, snapshotName);
+            await _pipeline.SendAsync(message, cancellationToken).ConfigureAwait(false);
+            switch (message.Response.Status)
+            {
+                case 200:
+                    {
+                        SnapshotResourceData value = default;
+                        using var document = await JsonDocument.ParseAsync(message.Response.ContentStream, default, cancellationToken).ConfigureAwait(false);
+                        value = SnapshotResourceData.DeserializeSnapshotResourceData(document.RootElement);
+                        return Response.FromValue(value, message.Response);
+                    }
+                case 404:
+                    return Response.FromValue((SnapshotResourceData)null, message.Response);
+                default:
+                    throw new RequestFailedException(message.Response);
+            }
+        }
+
+        /// <summary> Get the AppComplianceAutomation snapshot and its properties. </summary>
+        /// <param name="reportName"> Report Name. </param>
+        /// <param name="snapshotName"> Snapshot Name. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="reportName"/> or <paramref name="snapshotName"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="reportName"/> or <paramref name="snapshotName"/> is an empty string, and was expected to be non-empty. </exception>
+        public Response<SnapshotResourceData> Get(string reportName, string snapshotName, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
+            Argument.AssertNotNullOrEmpty(snapshotName, nameof(snapshotName));
+
+            using var message = CreateGetRequest(reportName, snapshotName);
+            _pipeline.Send(message, cancellationToken);
+            switch (message.Response.Status)
+            {
+                case 200:
+                    {
+                        SnapshotResourceData value = default;
+                        using var document = JsonDocument.Parse(message.Response.ContentStream);
+                        value = SnapshotResourceData.DeserializeSnapshotResourceData(document.RootElement);
+                        return Response.FromValue(value, message.Response);
+                    }
+                case 404:
+                    return Response.FromValue((SnapshotResourceData)null, message.Response);
+                default:
+                    throw new RequestFailedException(message.Response);
+            }
+        }
+
+        internal HttpMessage CreateDownloadRequest(string reportName, string snapshotName, SnapshotDownloadContent content)
+        {
+            var message = _pipeline.CreateMessage();
+            var request = message.Request;
+            request.Method = RequestMethod.Post;
+            var uri = new RawRequestUriBuilder();
+            uri.Reset(_endpoint);
+            uri.AppendPath("/providers/Microsoft.AppComplianceAutomation/reports/", false);
+            uri.AppendPath(reportName, true);
+            uri.AppendPath("/snapshots/", false);
+            uri.AppendPath(snapshotName, true);
+            uri.AppendPath("/download", false);
+            uri.AppendQuery("api-version", _apiVersion, true);
+            request.Uri = uri;
+            request.Headers.Add("Accept", "application/json");
+            request.Headers.Add("Content-Type", "application/json");
+            var content0 = new Utf8JsonRequestContent();
+            content0.JsonWriter.WriteObjectValue(content);
+            request.Content = content0;
+            _userAgent.Apply(message);
+            return message;
+        }
+
+        /// <summary> Download compliance needs from snapshot, like: Compliance Report, Resource List. </summary>
+        /// <param name="reportName"> Report Name. </param>
+        /// <param name="snapshotName"> Snapshot Name. </param>
+        /// <param name="content"> Parameters for the query operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="reportName"/>, <paramref name="snapshotName"/> or <paramref name="content"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="reportName"/> or <paramref name="snapshotName"/> is an empty string, and was expected to be non-empty. </exception>
+        public async Task<Response> DownloadAsync(string reportName, string snapshotName, SnapshotDownloadContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
+            Argument.AssertNotNullOrEmpty(snapshotName, nameof(snapshotName));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using var message = CreateDownloadRequest(reportName, snapshotName, content);
+            await _pipeline.SendAsync(message, cancellationToken).ConfigureAwait(false);
+            switch (message.Response.Status)
+            {
+                case 200:
+                case 202:
+                    return message.Response;
+                default:
+                    throw new RequestFailedException(message.Response);
+            }
+        }
+
+        /// <summary> Download compliance needs from snapshot, like: Compliance Report, Resource List. </summary>
+        /// <param name="reportName"> Report Name. </param>
+        /// <param name="snapshotName"> Snapshot Name. </param>
+        /// <param name="content"> Parameters for the query operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="reportName"/>, <paramref name="snapshotName"/> or <paramref name="content"/> is null. </exception>
+        /// <exception cref="ArgumentException"> <paramref name="reportName"/> or <paramref name="snapshotName"/> is an empty string, and was expected to be non-empty. </exception>
+        public Response Download(string reportName, string snapshotName, SnapshotDownloadContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
+            Argument.AssertNotNullOrEmpty(snapshotName, nameof(snapshotName));
+            Argument.AssertNotNull(content, nameof(content));
+
+            using var message = CreateDownloadRequest(reportName, snapshotName, content);
+            _pipeline.Send(message, cancellationToken);
+            switch (message.Response.Status)
+            {
+                case 200:
+                case 202:
+                    return message.Response;
+                default:
+                    throw new RequestFailedException(message.Response);
+            }
+        }
+
+        internal HttpMessage CreateListNextPageRequest(string nextLink, string reportName, string skipToken, int? top, string select, string filter, string orderby, string reportCreatorTenantId, string offerGuid)
         {
             var message = _pipeline.CreateMessage();
             var request = message.Request;
@@ -154,17 +315,19 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="skipToken"> Skip over when retrieving results. </param>
         /// <param name="top"> Number of elements to return when retrieving results. </param>
         /// <param name="select"> OData Select statement. Limits the properties on each entry to just those requested, e.g. ?$select=reportName,id. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="orderby"> OData order by query option. </param>
         /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
         /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="nextLink"/> or <paramref name="reportName"/> is null. </exception>
         /// <exception cref="ArgumentException"> <paramref name="reportName"/> is an empty string, and was expected to be non-empty. </exception>
-        public async Task<Response<SnapshotResourceList>> ListNextPageAsync(string nextLink, string reportName, string skipToken = null, int? top = null, string select = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
+        public async Task<Response<SnapshotResourceList>> ListNextPageAsync(string nextLink, string reportName, string skipToken = null, int? top = null, string select = null, string filter = null, string orderby = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNull(nextLink, nameof(nextLink));
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var message = CreateListNextPageRequest(nextLink, reportName, skipToken, top, select, reportCreatorTenantId, offerGuid);
+            using var message = CreateListNextPageRequest(nextLink, reportName, skipToken, top, select, filter, orderby, reportCreatorTenantId, offerGuid);
             await _pipeline.SendAsync(message, cancellationToken).ConfigureAwait(false);
             switch (message.Response.Status)
             {
@@ -186,17 +349,19 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="skipToken"> Skip over when retrieving results. </param>
         /// <param name="top"> Number of elements to return when retrieving results. </param>
         /// <param name="select"> OData Select statement. Limits the properties on each entry to just those requested, e.g. ?$select=reportName,id. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="orderby"> OData order by query option. </param>
         /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
         /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         /// <exception cref="ArgumentNullException"> <paramref name="nextLink"/> or <paramref name="reportName"/> is null. </exception>
         /// <exception cref="ArgumentException"> <paramref name="reportName"/> is an empty string, and was expected to be non-empty. </exception>
-        public Response<SnapshotResourceList> ListNextPage(string nextLink, string reportName, string skipToken = null, int? top = null, string select = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
+        public Response<SnapshotResourceList> ListNextPage(string nextLink, string reportName, string skipToken = null, int? top = null, string select = null, string filter = null, string orderby = null, string reportCreatorTenantId = null, string offerGuid = null, CancellationToken cancellationToken = default)
         {
             Argument.AssertNotNull(nextLink, nameof(nextLink));
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var message = CreateListNextPageRequest(nextLink, reportName, skipToken, top, select, reportCreatorTenantId, offerGuid);
+            using var message = CreateListNextPageRequest(nextLink, reportName, skipToken, top, select, filter, orderby, reportCreatorTenantId, offerGuid);
             _pipeline.Send(message, cancellationToken);
             switch (message.Response.Status)
             {

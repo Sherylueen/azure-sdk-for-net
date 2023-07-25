@@ -5,14 +5,25 @@
 
 #nullable disable
 
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Azure;
 using Azure.Core;
+using Azure.Core.Pipeline;
 using Azure.ResourceManager;
+using Azure.ResourceManager.AppComplianceAutomation.Models;
 
 namespace Azure.ResourceManager.AppComplianceAutomation
 {
     /// <summary> A class to add extension methods to TenantResource. </summary>
     internal partial class TenantResourceExtensionClient : ArmResource
     {
+        private ClientDiagnostics _reportResourceReportsClientDiagnostics;
+        private ReportsRestOperations _reportResourceReportsRestClient;
+        private ClientDiagnostics _defaultClientDiagnostics;
+        private AppComplianceAutomationToolForMicrosoft365RestOperations _defaultRestClient;
+
         /// <summary> Initializes a new instance of the <see cref="TenantResourceExtensionClient"/> class for mocking. </summary>
         protected TenantResourceExtensionClient()
         {
@@ -25,6 +36,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
         }
 
+        private ClientDiagnostics ReportResourceReportsClientDiagnostics => _reportResourceReportsClientDiagnostics ??= new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ReportResource.ResourceType.Namespace, Diagnostics);
+        private ReportsRestOperations ReportResourceReportsRestClient => _reportResourceReportsRestClient ??= new ReportsRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, GetApiVersionOrNull(ReportResource.ResourceType));
+        private ClientDiagnostics DefaultClientDiagnostics => _defaultClientDiagnostics ??= new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ProviderConstants.DefaultProviderNamespace, Diagnostics);
+        private AppComplianceAutomationToolForMicrosoft365RestOperations DefaultRestClient => _defaultRestClient ??= new AppComplianceAutomationToolForMicrosoft365RestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint);
+
         private string GetApiVersionOrNull(ResourceType resourceType)
         {
             TryGetApiVersion(resourceType, out string apiVersion);
@@ -36,6 +52,396 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         public virtual ReportResourceCollection GetReportResources()
         {
             return GetCachedClient(Client => new ReportResourceCollection(Client, Id));
+        }
+
+        /// <summary>
+        /// Checks the report name.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/checkNameAvailability</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_CheckNameAvailability</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="body"> NameAvailabilityRequest object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual async Task<Response<CheckNameAvailabilityResponse>> CheckNameAvailabilityReportAsync(CheckNameAvailabilityRequest body, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.CheckNameAvailabilityReport");
+            scope.Start();
+            try
+            {
+                var response = await ReportResourceReportsRestClient.CheckNameAvailabilityAsync(body, cancellationToken).ConfigureAwait(false);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Checks the report name.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/checkNameAvailability</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_CheckNameAvailability</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="body"> NameAvailabilityRequest object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual Response<CheckNameAvailabilityResponse> CheckNameAvailabilityReport(CheckNameAvailabilityRequest body, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.CheckNameAvailabilityReport");
+            scope.Start();
+            try
+            {
+                var response = ReportResourceReportsRestClient.CheckNameAvailability(body, cancellationToken);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get the resource count.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getCollectionCount</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetCollectionCount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="content"> Get collection count's request object. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual async Task<Response<GetCollectionCountResponse>> GetCollectionCountReportAsync(GetCollectionCountContent content, string filter = null, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.GetCollectionCountReport");
+            scope.Start();
+            try
+            {
+                var response = await ReportResourceReportsRestClient.GetCollectionCountAsync(content, filter, cancellationToken).ConfigureAwait(false);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get the resource count.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getCollectionCount</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetCollectionCount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="content"> Get collection count's request object. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual Response<GetCollectionCountResponse> GetCollectionCountReport(GetCollectionCountContent content, string filter = null, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.GetCollectionCountReport");
+            scope.Start();
+            try
+            {
+                var response = ReportResourceReportsRestClient.GetCollectionCount(content, filter, cancellationToken);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get the resource overview status.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getOverviewStatus</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetOverviewStatus</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="content"> Get overview status request object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual async Task<Response<GetOverviewStatusResponse>> GetOverviewStatusReportAsync(GetOverviewStatusContent content, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.GetOverviewStatusReport");
+            scope.Start();
+            try
+            {
+                var response = await ReportResourceReportsRestClient.GetOverviewStatusAsync(content, cancellationToken).ConfigureAwait(false);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Get the resource overview status.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getOverviewStatus</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetOverviewStatus</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="content"> Get overview status request object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual Response<GetOverviewStatusResponse> GetOverviewStatusReport(GetOverviewStatusContent content, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.GetOverviewStatusReport");
+            scope.Start();
+            try
+            {
+                var response = ReportResourceReportsRestClient.GetOverviewStatus(content, cancellationToken);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// List the storage accounts which are in use by related reports
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/listInUseStorageAccounts</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_ListInUseStorageAccount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="content"> Parameters for listing in use storage accounts operation. If subscription list is null, it will check the user's all subscriptions. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual async Task<Response<ListInUseStorageAccountsResponse>> GetInUseStorageAccountReportAsync(ListInUseStorageAccountsContent content = null, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.GetInUseStorageAccountReport");
+            scope.Start();
+            try
+            {
+                var response = await ReportResourceReportsRestClient.ListInUseStorageAccountAsync(content, cancellationToken).ConfigureAwait(false);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// List the storage accounts which are in use by related reports
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/listInUseStorageAccounts</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_ListInUseStorageAccount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="content"> Parameters for listing in use storage accounts operation. If subscription list is null, it will check the user's all subscriptions. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual Response<ListInUseStorageAccountsResponse> GetInUseStorageAccountReport(ListInUseStorageAccountsContent content = null, CancellationToken cancellationToken = default)
+        {
+            using var scope = ReportResourceReportsClientDiagnostics.CreateScope("TenantResourceExtensionClient.GetInUseStorageAccountReport");
+            scope.Start();
+            try
+            {
+                var response = ReportResourceReportsRestClient.ListInUseStorageAccount(content, cancellationToken);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Onboard given subscriptions to Microsoft.AppComplianceAutomation provider.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/onboard</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Onboard</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for onboard operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual async Task<ArmOperation<OnboardResponse>> OnboardAsync(WaitUntil waitUntil, OnboardContent content, CancellationToken cancellationToken = default)
+        {
+            using var scope = DefaultClientDiagnostics.CreateScope("TenantResourceExtensionClient.Onboard");
+            scope.Start();
+            try
+            {
+                var response = await DefaultRestClient.OnboardAsync(content, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation<OnboardResponse>(new OnboardResponseOperationSource(), DefaultClientDiagnostics, Pipeline, DefaultRestClient.CreateOnboardRequest(content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                if (waitUntil == WaitUntil.Completed)
+                    await operation.WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
+                return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Onboard given subscriptions to Microsoft.AppComplianceAutomation provider.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/onboard</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Onboard</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for onboard operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual ArmOperation<OnboardResponse> Onboard(WaitUntil waitUntil, OnboardContent content, CancellationToken cancellationToken = default)
+        {
+            using var scope = DefaultClientDiagnostics.CreateScope("TenantResourceExtensionClient.Onboard");
+            scope.Start();
+            try
+            {
+                var response = DefaultRestClient.Onboard(content, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation<OnboardResponse>(new OnboardResponseOperationSource(), DefaultClientDiagnostics, Pipeline, DefaultRestClient.CreateOnboardRequest(content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                if (waitUntil == WaitUntil.Completed)
+                    operation.WaitForCompletion(cancellationToken);
+                return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Trigger evaluation for given resourceIds to get quick compliance result.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/triggerEvaluation</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>TriggerEvaluation</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for trigger evaluation operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual async Task<ArmOperation<TriggerEvaluationResponse>> TriggerEvaluationAsync(WaitUntil waitUntil, TriggerEvaluationContent content, CancellationToken cancellationToken = default)
+        {
+            using var scope = DefaultClientDiagnostics.CreateScope("TenantResourceExtensionClient.TriggerEvaluation");
+            scope.Start();
+            try
+            {
+                var response = await DefaultRestClient.TriggerEvaluationAsync(content, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation<TriggerEvaluationResponse>(new TriggerEvaluationResponseOperationSource(), DefaultClientDiagnostics, Pipeline, DefaultRestClient.CreateTriggerEvaluationRequest(content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                if (waitUntil == WaitUntil.Completed)
+                    await operation.WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
+                return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Trigger evaluation for given resourceIds to get quick compliance result.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/triggerEvaluation</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>TriggerEvaluation</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for trigger evaluation operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public virtual ArmOperation<TriggerEvaluationResponse> TriggerEvaluation(WaitUntil waitUntil, TriggerEvaluationContent content, CancellationToken cancellationToken = default)
+        {
+            using var scope = DefaultClientDiagnostics.CreateScope("TenantResourceExtensionClient.TriggerEvaluation");
+            scope.Start();
+            try
+            {
+                var response = DefaultRestClient.TriggerEvaluation(content, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation<TriggerEvaluationResponse>(new TriggerEvaluationResponseOperationSource(), DefaultClientDiagnostics, Pipeline, DefaultRestClient.CreateTriggerEvaluationRequest(content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                if (waitUntil == WaitUntil.Completed)
+                    operation.WaitForCompletion(cancellationToken);
+                return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
         }
     }
 }

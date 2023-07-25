@@ -15,6 +15,7 @@ using Azure;
 using Azure.Core;
 using Azure.Core.Pipeline;
 using Azure.ResourceManager;
+using Azure.ResourceManager.AppComplianceAutomation.Models;
 using Azure.ResourceManager.Resources;
 
 namespace Azure.ResourceManager.AppComplianceAutomation
@@ -26,8 +27,6 @@ namespace Azure.ResourceManager.AppComplianceAutomation
     /// </summary>
     public partial class ReportResourceCollection : ArmCollection, IEnumerable<ReportResource>, IAsyncEnumerable<ReportResource>
     {
-        private readonly ClientDiagnostics _reportResourceReportClientDiagnostics;
-        private readonly ReportRestOperations _reportResourceReportRestClient;
         private readonly ClientDiagnostics _reportResourceReportsClientDiagnostics;
         private readonly ReportsRestOperations _reportResourceReportsRestClient;
 
@@ -41,9 +40,6 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="id"> The identifier of the parent resource that is the target of operations. </param>
         internal ReportResourceCollection(ArmClient client, ResourceIdentifier id) : base(client, id)
         {
-            _reportResourceReportClientDiagnostics = new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ReportResource.ResourceType.Namespace, Diagnostics);
-            TryGetApiVersion(ReportResource.ResourceType, out string reportResourceReportApiVersion);
-            _reportResourceReportRestClient = new ReportRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, reportResourceReportApiVersion);
             _reportResourceReportsClientDiagnostics = new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ReportResource.ResourceType.Namespace, Diagnostics);
             TryGetApiVersion(ReportResource.ResourceType, out string reportResourceReportsApiVersion);
             _reportResourceReportsRestClient = new ReportsRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, reportResourceReportsApiVersion);
@@ -67,7 +63,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_CreateOrUpdate</description>
+        /// <description>Reports_CreateOrUpdate</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -82,12 +78,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
             Argument.AssertNotNull(data, nameof(data));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResourceCollection.CreateOrUpdate");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResourceCollection.CreateOrUpdate");
             scope.Start();
             try
             {
-                var response = await _reportResourceReportRestClient.CreateOrUpdateAsync(reportName, data, cancellationToken).ConfigureAwait(false);
-                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportClientDiagnostics, Pipeline, _reportResourceReportRestClient.CreateCreateOrUpdateRequest(reportName, data).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = await _reportResourceReportsRestClient.CreateOrUpdateAsync(reportName, data, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateCreateOrUpdateRequest(reportName, data).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     await operation.WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
                 return operation;
@@ -108,7 +104,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_CreateOrUpdate</description>
+        /// <description>Reports_CreateOrUpdate</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -123,12 +119,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
             Argument.AssertNotNull(data, nameof(data));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResourceCollection.CreateOrUpdate");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResourceCollection.CreateOrUpdate");
             scope.Start();
             try
             {
-                var response = _reportResourceReportRestClient.CreateOrUpdate(reportName, data, cancellationToken);
-                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportClientDiagnostics, Pipeline, _reportResourceReportRestClient.CreateCreateOrUpdateRequest(reportName, data).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = _reportResourceReportsRestClient.CreateOrUpdate(reportName, data, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateCreateOrUpdateRequest(reportName, data).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     operation.WaitForCompletion(cancellationToken);
                 return operation;
@@ -149,7 +145,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -161,11 +157,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResourceCollection.Get");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResourceCollection.Get");
             scope.Start();
             try
             {
-                var response = await _reportResourceReportRestClient.GetAsync(reportName, cancellationToken).ConfigureAwait(false);
+                var response = await _reportResourceReportsRestClient.GetAsync(reportName, cancellationToken).ConfigureAwait(false);
                 if (response.Value == null)
                     throw new RequestFailedException(response.GetRawResponse());
                 return Response.FromValue(new ReportResource(Client, response.Value), response.GetRawResponse());
@@ -186,7 +182,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -198,11 +194,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResourceCollection.Get");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResourceCollection.Get");
             scope.Start();
             try
             {
-                var response = _reportResourceReportRestClient.Get(reportName, cancellationToken);
+                var response = _reportResourceReportsRestClient.Get(reportName, cancellationToken);
                 if (response.Value == null)
                     throw new RequestFailedException(response.GetRawResponse());
                 return Response.FromValue(new ReportResource(Client, response.Value), response.GetRawResponse());
@@ -227,17 +223,15 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// </list>
         /// </summary>
-        /// <param name="skipToken"> Skip over when retrieving results. </param>
-        /// <param name="top"> Number of elements to return when retrieving results. </param>
-        /// <param name="select"> OData Select statement. Limits the properties on each entry to just those requested, e.g. ?$select=reportName,id. </param>
-        /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
-        /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
+        /// <param name="options"> A property bag which contains all the parameters of this method except the LRO qualifier and request context parameter. </param>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         /// <returns> An async collection of <see cref="ReportResource" /> that may take multiple service requests to iterate over. </returns>
-        public virtual AsyncPageable<ReportResource> GetAllAsync(string skipToken = null, int? top = null, string select = null, string offerGuid = null, string reportCreatorTenantId = null, CancellationToken cancellationToken = default)
+        public virtual AsyncPageable<ReportResource> GetAllAsync(ReportResourceCollectionGetAllOptions options, CancellationToken cancellationToken = default)
         {
-            HttpMessage FirstPageRequest(int? pageSizeHint) => _reportResourceReportsRestClient.CreateListRequest(skipToken, top, select, offerGuid, reportCreatorTenantId);
-            HttpMessage NextPageRequest(int? pageSizeHint, string nextLink) => _reportResourceReportsRestClient.CreateListNextPageRequest(nextLink, skipToken, top, select, offerGuid, reportCreatorTenantId);
+            options ??= new ReportResourceCollectionGetAllOptions();
+
+            HttpMessage FirstPageRequest(int? pageSizeHint) => _reportResourceReportsRestClient.CreateListRequest(options.SkipToken, options.Top, options.Select, options.Filter, options.Orderby, options.OfferGuid, options.ReportCreatorTenantId);
+            HttpMessage NextPageRequest(int? pageSizeHint, string nextLink) => _reportResourceReportsRestClient.CreateListNextPageRequest(nextLink, options.SkipToken, options.Top, options.Select, options.Filter, options.Orderby, options.OfferGuid, options.ReportCreatorTenantId);
             return PageableHelpers.CreateAsyncPageable(FirstPageRequest, NextPageRequest, e => new ReportResource(Client, ReportResourceData.DeserializeReportResourceData(e)), _reportResourceReportsClientDiagnostics, Pipeline, "ReportResourceCollection.GetAll", "value", "nextLink", cancellationToken);
         }
 
@@ -254,17 +248,15 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// </list>
         /// </summary>
-        /// <param name="skipToken"> Skip over when retrieving results. </param>
-        /// <param name="top"> Number of elements to return when retrieving results. </param>
-        /// <param name="select"> OData Select statement. Limits the properties on each entry to just those requested, e.g. ?$select=reportName,id. </param>
-        /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
-        /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
+        /// <param name="options"> A property bag which contains all the parameters of this method except the LRO qualifier and request context parameter. </param>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         /// <returns> A collection of <see cref="ReportResource" /> that may take multiple service requests to iterate over. </returns>
-        public virtual Pageable<ReportResource> GetAll(string skipToken = null, int? top = null, string select = null, string offerGuid = null, string reportCreatorTenantId = null, CancellationToken cancellationToken = default)
+        public virtual Pageable<ReportResource> GetAll(ReportResourceCollectionGetAllOptions options, CancellationToken cancellationToken = default)
         {
-            HttpMessage FirstPageRequest(int? pageSizeHint) => _reportResourceReportsRestClient.CreateListRequest(skipToken, top, select, offerGuid, reportCreatorTenantId);
-            HttpMessage NextPageRequest(int? pageSizeHint, string nextLink) => _reportResourceReportsRestClient.CreateListNextPageRequest(nextLink, skipToken, top, select, offerGuid, reportCreatorTenantId);
+            options ??= new ReportResourceCollectionGetAllOptions();
+
+            HttpMessage FirstPageRequest(int? pageSizeHint) => _reportResourceReportsRestClient.CreateListRequest(options.SkipToken, options.Top, options.Select, options.Filter, options.Orderby, options.OfferGuid, options.ReportCreatorTenantId);
+            HttpMessage NextPageRequest(int? pageSizeHint, string nextLink) => _reportResourceReportsRestClient.CreateListNextPageRequest(nextLink, options.SkipToken, options.Top, options.Select, options.Filter, options.Orderby, options.OfferGuid, options.ReportCreatorTenantId);
             return PageableHelpers.CreatePageable(FirstPageRequest, NextPageRequest, e => new ReportResource(Client, ReportResourceData.DeserializeReportResourceData(e)), _reportResourceReportsClientDiagnostics, Pipeline, "ReportResourceCollection.GetAll", "value", "nextLink", cancellationToken);
         }
 
@@ -277,7 +269,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -289,11 +281,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResourceCollection.Exists");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResourceCollection.Exists");
             scope.Start();
             try
             {
-                var response = await _reportResourceReportRestClient.GetAsync(reportName, cancellationToken: cancellationToken).ConfigureAwait(false);
+                var response = await _reportResourceReportsRestClient.GetAsync(reportName, cancellationToken: cancellationToken).ConfigureAwait(false);
                 return Response.FromValue(response.Value != null, response.GetRawResponse());
             }
             catch (Exception e)
@@ -312,7 +304,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -324,11 +316,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNullOrEmpty(reportName, nameof(reportName));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResourceCollection.Exists");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResourceCollection.Exists");
             scope.Start();
             try
             {
-                var response = _reportResourceReportRestClient.Get(reportName, cancellationToken: cancellationToken);
+                var response = _reportResourceReportsRestClient.Get(reportName, cancellationToken: cancellationToken);
                 return Response.FromValue(response.Value != null, response.GetRawResponse());
             }
             catch (Exception e)
@@ -340,17 +332,17 @@ namespace Azure.ResourceManager.AppComplianceAutomation
 
         IEnumerator<ReportResource> IEnumerable<ReportResource>.GetEnumerator()
         {
-            return GetAll().GetEnumerator();
+            return GetAll(options: null).GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetAll().GetEnumerator();
+            return GetAll(options: null).GetEnumerator();
         }
 
         IAsyncEnumerator<ReportResource> IAsyncEnumerable<ReportResource>.GetAsyncEnumerator(CancellationToken cancellationToken)
         {
-            return GetAllAsync(cancellationToken: cancellationToken).GetAsyncEnumerator(cancellationToken);
+            return GetAllAsync(options: null, cancellationToken: cancellationToken).GetAsyncEnumerator(cancellationToken);
         }
     }
 }

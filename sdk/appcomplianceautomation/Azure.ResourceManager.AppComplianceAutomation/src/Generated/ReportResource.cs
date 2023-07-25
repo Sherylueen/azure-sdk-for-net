@@ -33,8 +33,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             return new ResourceIdentifier(resourceId);
         }
 
-        private readonly ClientDiagnostics _reportResourceReportClientDiagnostics;
-        private readonly ReportRestOperations _reportResourceReportRestClient;
+        private readonly ClientDiagnostics _reportResourceReportsClientDiagnostics;
+        private readonly ReportsRestOperations _reportResourceReportsRestClient;
         private readonly ReportResourceData _data;
 
         /// <summary> Initializes a new instance of the <see cref="ReportResource"/> class for mocking. </summary>
@@ -56,9 +56,9 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="id"> The identifier of the resource that is the target of operations. </param>
         internal ReportResource(ArmClient client, ResourceIdentifier id) : base(client, id)
         {
-            _reportResourceReportClientDiagnostics = new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ResourceType.Namespace, Diagnostics);
-            TryGetApiVersion(ResourceType, out string reportResourceReportApiVersion);
-            _reportResourceReportRestClient = new ReportRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, reportResourceReportApiVersion);
+            _reportResourceReportsClientDiagnostics = new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ResourceType.Namespace, Diagnostics);
+            TryGetApiVersion(ResourceType, out string reportResourceReportsApiVersion);
+            _reportResourceReportsRestClient = new ReportsRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, reportResourceReportsApiVersion);
 #if DEBUG
 			ValidateResourceId(Id);
 #endif
@@ -88,6 +88,59 @@ namespace Azure.ResourceManager.AppComplianceAutomation
                 throw new ArgumentException(string.Format(CultureInfo.CurrentCulture, "Invalid resource type {0} expected {1}", id.ResourceType, ResourceType), nameof(id));
         }
 
+        /// <summary> Gets a collection of WebhookResources in the ReportResource. </summary>
+        /// <returns> An object representing collection of WebhookResources and their operations over a WebhookResource. </returns>
+        public virtual WebhookResourceCollection GetWebhookResources()
+        {
+            return GetCachedClient(Client => new WebhookResourceCollection(Client, Id));
+        }
+
+        /// <summary>
+        /// Get the AppComplianceAutomation webhook and its properties.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/webhooks/{webhookName}</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Webhooks_Get</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="webhookName"> Webhook Name. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentException"> <paramref name="webhookName"/> is an empty string, and was expected to be non-empty. </exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="webhookName"/> is null. </exception>
+        [ForwardsClientCalls]
+        public virtual async Task<Response<WebhookResource>> GetWebhookResourceAsync(string webhookName, CancellationToken cancellationToken = default)
+        {
+            return await GetWebhookResources().GetAsync(webhookName, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the AppComplianceAutomation webhook and its properties.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/webhooks/{webhookName}</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Webhooks_Get</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="webhookName"> Webhook Name. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentException"> <paramref name="webhookName"/> is an empty string, and was expected to be non-empty. </exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="webhookName"/> is null. </exception>
+        [ForwardsClientCalls]
+        public virtual Response<WebhookResource> GetWebhookResource(string webhookName, CancellationToken cancellationToken = default)
+        {
+            return GetWebhookResources().Get(webhookName, cancellationToken);
+        }
+
         /// <summary> Gets a collection of SnapshotResources in the ReportResource. </summary>
         /// <returns> An object representing collection of SnapshotResources and their operations over a SnapshotResource. </returns>
         public virtual SnapshotResourceCollection GetSnapshotResources()
@@ -104,7 +157,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Snapshot_Get</description>
+        /// <description>Snapshots_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -127,7 +180,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Snapshot_Get</description>
+        /// <description>Snapshots_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -141,6 +194,63 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             return GetSnapshotResources().Get(snapshotName, cancellationToken);
         }
 
+        /// <summary> Gets a collection of EvidenceResources in the ReportResource. </summary>
+        /// <returns> An object representing collection of EvidenceResources and their operations over a EvidenceResource. </returns>
+        public virtual EvidenceResourceCollection GetEvidenceResources()
+        {
+            return GetCachedClient(Client => new EvidenceResourceCollection(Client, Id));
+        }
+
+        /// <summary>
+        /// Get the evidence metadata
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/evidences/{evidenceName}</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Evidences_Get</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="evidenceName"> The evidence name. </param>
+        /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
+        /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentException"> <paramref name="evidenceName"/> is an empty string, and was expected to be non-empty. </exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="evidenceName"/> is null. </exception>
+        [ForwardsClientCalls]
+        public virtual async Task<Response<EvidenceResource>> GetEvidenceResourceAsync(string evidenceName, string offerGuid = null, string reportCreatorTenantId = null, CancellationToken cancellationToken = default)
+        {
+            return await GetEvidenceResources().GetAsync(evidenceName, offerGuid, reportCreatorTenantId, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the evidence metadata
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/evidences/{evidenceName}</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Evidences_Get</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="evidenceName"> The evidence name. </param>
+        /// <param name="offerGuid"> The offerGuid which mapping to the reports. </param>
+        /// <param name="reportCreatorTenantId"> The tenant id of the report creator. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentException"> <paramref name="evidenceName"/> is an empty string, and was expected to be non-empty. </exception>
+        /// <exception cref="ArgumentNullException"> <paramref name="evidenceName"/> is null. </exception>
+        [ForwardsClientCalls]
+        public virtual Response<EvidenceResource> GetEvidenceResource(string evidenceName, string offerGuid = null, string reportCreatorTenantId = null, CancellationToken cancellationToken = default)
+        {
+            return GetEvidenceResources().Get(evidenceName, offerGuid, reportCreatorTenantId, cancellationToken);
+        }
+
         /// <summary>
         /// Get the AppComplianceAutomation report and its properties.
         /// <list type="bullet">
@@ -150,18 +260,18 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         public virtual async Task<Response<ReportResource>> GetAsync(CancellationToken cancellationToken = default)
         {
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResource.Get");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.Get");
             scope.Start();
             try
             {
-                var response = await _reportResourceReportRestClient.GetAsync(Id.Name, cancellationToken).ConfigureAwait(false);
+                var response = await _reportResourceReportsRestClient.GetAsync(Id.Name, cancellationToken).ConfigureAwait(false);
                 if (response.Value == null)
                     throw new RequestFailedException(response.GetRawResponse());
                 return Response.FromValue(new ReportResource(Client, response.Value), response.GetRawResponse());
@@ -182,18 +292,18 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         public virtual Response<ReportResource> Get(CancellationToken cancellationToken = default)
         {
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResource.Get");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.Get");
             scope.Start();
             try
             {
-                var response = _reportResourceReportRestClient.Get(Id.Name, cancellationToken);
+                var response = _reportResourceReportsRestClient.Get(Id.Name, cancellationToken);
                 if (response.Value == null)
                     throw new RequestFailedException(response.GetRawResponse());
                 return Response.FromValue(new ReportResource(Client, response.Value), response.GetRawResponse());
@@ -214,7 +324,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Delete</description>
+        /// <description>Reports_Delete</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -222,12 +332,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         public virtual async Task<ArmOperation> DeleteAsync(WaitUntil waitUntil, CancellationToken cancellationToken = default)
         {
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResource.Delete");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.Delete");
             scope.Start();
             try
             {
-                var response = await _reportResourceReportRestClient.DeleteAsync(Id.Name, cancellationToken).ConfigureAwait(false);
-                var operation = new AppComplianceAutomationArmOperation(_reportResourceReportClientDiagnostics, Pipeline, _reportResourceReportRestClient.CreateDeleteRequest(Id.Name).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = await _reportResourceReportsRestClient.DeleteAsync(Id.Name, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation(_reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateDeleteRequest(Id.Name).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     await operation.WaitForCompletionResponseAsync(cancellationToken).ConfigureAwait(false);
                 return operation;
@@ -248,7 +358,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Delete</description>
+        /// <description>Reports_Delete</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -256,12 +366,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         public virtual ArmOperation Delete(WaitUntil waitUntil, CancellationToken cancellationToken = default)
         {
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResource.Delete");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.Delete");
             scope.Start();
             try
             {
-                var response = _reportResourceReportRestClient.Delete(Id.Name, cancellationToken);
-                var operation = new AppComplianceAutomationArmOperation(_reportResourceReportClientDiagnostics, Pipeline, _reportResourceReportRestClient.CreateDeleteRequest(Id.Name).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = _reportResourceReportsRestClient.Delete(Id.Name, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation(_reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateDeleteRequest(Id.Name).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     operation.WaitForCompletionResponse(cancellationToken);
                 return operation;
@@ -282,7 +392,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Update</description>
+        /// <description>Reports_Update</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -294,12 +404,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNull(patch, nameof(patch));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResource.Update");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.Update");
             scope.Start();
             try
             {
-                var response = await _reportResourceReportRestClient.UpdateAsync(Id.Name, patch, cancellationToken).ConfigureAwait(false);
-                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportClientDiagnostics, Pipeline, _reportResourceReportRestClient.CreateUpdateRequest(Id.Name, patch).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = await _reportResourceReportsRestClient.UpdateAsync(Id.Name, patch, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateUpdateRequest(Id.Name, patch).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     await operation.WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
                 return operation;
@@ -320,7 +430,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Update</description>
+        /// <description>Reports_Update</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -332,15 +442,159 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNull(patch, nameof(patch));
 
-            using var scope = _reportResourceReportClientDiagnostics.CreateScope("ReportResource.Update");
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.Update");
             scope.Start();
             try
             {
-                var response = _reportResourceReportRestClient.Update(Id.Name, patch, cancellationToken);
-                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportClientDiagnostics, Pipeline, _reportResourceReportRestClient.CreateUpdateRequest(Id.Name, patch).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = _reportResourceReportsRestClient.Update(Id.Name, patch, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation<ReportResource>(new ReportResourceOperationSource(Client), _reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateUpdateRequest(Id.Name, patch).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     operation.WaitForCompletion(cancellationToken);
                 return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Synchronize attestation record from app compliance.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/syncCertRecord</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_SyncCertRecord</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for synchronize certification record operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public virtual async Task<ArmOperation> SyncCertRecordAsync(WaitUntil waitUntil, SyncCertRecordContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.SyncCertRecord");
+            scope.Start();
+            try
+            {
+                var response = await _reportResourceReportsRestClient.SyncCertRecordAsync(Id.Name, content, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation(_reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateSyncCertRecordRequest(Id.Name, content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                if (waitUntil == WaitUntil.Completed)
+                    await operation.WaitForCompletionResponseAsync(cancellationToken).ConfigureAwait(false);
+                return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Synchronize attestation record from app compliance.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/syncCertRecord</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_SyncCertRecord</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for synchronize certification record operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public virtual ArmOperation SyncCertRecord(WaitUntil waitUntil, SyncCertRecordContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.SyncCertRecord");
+            scope.Start();
+            try
+            {
+                var response = _reportResourceReportsRestClient.SyncCertRecord(Id.Name, content, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation(_reportResourceReportsClientDiagnostics, Pipeline, _reportResourceReportsRestClient.CreateSyncCertRecordRequest(Id.Name, content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                if (waitUntil == WaitUntil.Completed)
+                    operation.WaitForCompletionResponse(cancellationToken);
+                return operation;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Checks the report's nested resource name availability, e.g: Webhooks, Evidences, Snapshots.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/checkNameAvailability</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_NestedResourceCheckNameAvailability</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="body"> NameAvailabilityRequest object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="body"/> is null. </exception>
+        public virtual async Task<Response<CheckNameAvailabilityResponse>> NestedResourceCheckNameAvailabilityAsync(CheckNameAvailabilityRequest body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.NestedResourceCheckNameAvailability");
+            scope.Start();
+            try
+            {
+                var response = await _reportResourceReportsRestClient.NestedResourceCheckNameAvailabilityAsync(Id.Name, body, cancellationToken).ConfigureAwait(false);
+                return response;
+            }
+            catch (Exception e)
+            {
+                scope.Failed(e);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Checks the report's nested resource name availability, e.g: Webhooks, Evidences, Snapshots.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/reports/{reportName}/checkNameAvailability</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_NestedResourceCheckNameAvailability</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="body"> NameAvailabilityRequest object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="body"/> is null. </exception>
+        public virtual Response<CheckNameAvailabilityResponse> NestedResourceCheckNameAvailability(CheckNameAvailabilityRequest body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            using var scope = _reportResourceReportsClientDiagnostics.CreateScope("ReportResource.NestedResourceCheckNameAvailability");
+            scope.Start();
+            try
+            {
+                var response = _reportResourceReportsRestClient.NestedResourceCheckNameAvailability(Id.Name, body, cancellationToken);
+                return response;
             }
             catch (Exception e)
             {

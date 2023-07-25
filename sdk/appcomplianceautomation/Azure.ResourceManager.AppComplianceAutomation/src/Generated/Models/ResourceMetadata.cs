@@ -6,7 +6,6 @@
 #nullable disable
 
 using System;
-using System.Collections.Generic;
 using Azure.Core;
 
 namespace Azure.ResourceManager.AppComplianceAutomation.Models
@@ -22,33 +21,32 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             Argument.AssertNotNull(resourceId, nameof(resourceId));
 
             ResourceId = resourceId;
-            Tags = new ChangeTrackingDictionary<string, string>();
         }
 
         /// <summary> Initializes a new instance of ResourceMetadata. </summary>
         /// <param name="resourceId"> Resource Id - e.g. "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1". </param>
-        /// <param name="resourceType"> Resource type. </param>
+        /// <param name="resourceType"> Resource type. e.g. "Microsoft.Compute/virtualMachines". </param>
         /// <param name="resourceKind"> Resource kind. </param>
-        /// <param name="resourceName"> Resource name. </param>
-        /// <param name="tags"> Resource's tag type. </param>
-        internal ResourceMetadata(string resourceId, string resourceType, string resourceKind, string resourceName, IDictionary<string, string> tags)
+        /// <param name="resourceOrigin"> Resource Origin. </param>
+        /// <param name="accountId"> Account Id. For example - the AWS account id. </param>
+        internal ResourceMetadata(string resourceId, string resourceType, string resourceKind, ResourceOrigin? resourceOrigin, string accountId)
         {
             ResourceId = resourceId;
             ResourceType = resourceType;
             ResourceKind = resourceKind;
-            ResourceName = resourceName;
-            Tags = tags;
+            ResourceOrigin = resourceOrigin;
+            AccountId = accountId;
         }
 
         /// <summary> Resource Id - e.g. "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg1/providers/Microsoft.Compute/virtualMachines/vm1". </summary>
         public string ResourceId { get; set; }
-        /// <summary> Resource type. </summary>
+        /// <summary> Resource type. e.g. "Microsoft.Compute/virtualMachines". </summary>
         public string ResourceType { get; set; }
         /// <summary> Resource kind. </summary>
         public string ResourceKind { get; set; }
-        /// <summary> Resource name. </summary>
-        public string ResourceName { get; set; }
-        /// <summary> Resource's tag type. </summary>
-        public IDictionary<string, string> Tags { get; }
+        /// <summary> Resource Origin. </summary>
+        public ResourceOrigin? ResourceOrigin { get; set; }
+        /// <summary> Account Id. For example - the AWS account id. </summary>
+        public string AccountId { get; set; }
     }
 }

@@ -32,8 +32,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             return new ResourceIdentifier(resourceId);
         }
 
-        private readonly ClientDiagnostics _snapshotResourceSnapshotClientDiagnostics;
-        private readonly SnapshotRestOperations _snapshotResourceSnapshotRestClient;
+        private readonly ClientDiagnostics _snapshotResourceSnapshotsClientDiagnostics;
+        private readonly SnapshotsRestOperations _snapshotResourceSnapshotsRestClient;
         private readonly SnapshotResourceData _data;
 
         /// <summary> Initializes a new instance of the <see cref="SnapshotResource"/> class for mocking. </summary>
@@ -55,9 +55,9 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// <param name="id"> The identifier of the resource that is the target of operations. </param>
         internal SnapshotResource(ArmClient client, ResourceIdentifier id) : base(client, id)
         {
-            _snapshotResourceSnapshotClientDiagnostics = new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ResourceType.Namespace, Diagnostics);
-            TryGetApiVersion(ResourceType, out string snapshotResourceSnapshotApiVersion);
-            _snapshotResourceSnapshotRestClient = new SnapshotRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, snapshotResourceSnapshotApiVersion);
+            _snapshotResourceSnapshotsClientDiagnostics = new ClientDiagnostics("Azure.ResourceManager.AppComplianceAutomation", ResourceType.Namespace, Diagnostics);
+            TryGetApiVersion(ResourceType, out string snapshotResourceSnapshotsApiVersion);
+            _snapshotResourceSnapshotsRestClient = new SnapshotsRestOperations(Pipeline, Diagnostics.ApplicationId, Endpoint, snapshotResourceSnapshotsApiVersion);
 #if DEBUG
 			ValidateResourceId(Id);
 #endif
@@ -96,18 +96,18 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Snapshot_Get</description>
+        /// <description>Snapshots_Get</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         public virtual async Task<Response<SnapshotResource>> GetAsync(CancellationToken cancellationToken = default)
         {
-            using var scope = _snapshotResourceSnapshotClientDiagnostics.CreateScope("SnapshotResource.Get");
+            using var scope = _snapshotResourceSnapshotsClientDiagnostics.CreateScope("SnapshotResource.Get");
             scope.Start();
             try
             {
-                var response = await _snapshotResourceSnapshotRestClient.GetAsync(Id.Parent.Name, Id.Name, cancellationToken).ConfigureAwait(false);
+                var response = await _snapshotResourceSnapshotsRestClient.GetAsync(Id.Parent.Name, Id.Name, cancellationToken).ConfigureAwait(false);
                 if (response.Value == null)
                     throw new RequestFailedException(response.GetRawResponse());
                 return Response.FromValue(new SnapshotResource(Client, response.Value), response.GetRawResponse());
@@ -128,18 +128,18 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Snapshot_Get</description>
+        /// <description>Snapshots_Get</description>
         /// </item>
         /// </list>
         /// </summary>
         /// <param name="cancellationToken"> The cancellation token to use. </param>
         public virtual Response<SnapshotResource> Get(CancellationToken cancellationToken = default)
         {
-            using var scope = _snapshotResourceSnapshotClientDiagnostics.CreateScope("SnapshotResource.Get");
+            using var scope = _snapshotResourceSnapshotsClientDiagnostics.CreateScope("SnapshotResource.Get");
             scope.Start();
             try
             {
-                var response = _snapshotResourceSnapshotRestClient.Get(Id.Parent.Name, Id.Name, cancellationToken);
+                var response = _snapshotResourceSnapshotsRestClient.Get(Id.Parent.Name, Id.Name, cancellationToken);
                 if (response.Value == null)
                     throw new RequestFailedException(response.GetRawResponse());
                 return Response.FromValue(new SnapshotResource(Client, response.Value), response.GetRawResponse());
@@ -160,7 +160,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Snapshot_Download</description>
+        /// <description>Snapshots_Download</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -172,12 +172,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using var scope = _snapshotResourceSnapshotClientDiagnostics.CreateScope("SnapshotResource.Download");
+            using var scope = _snapshotResourceSnapshotsClientDiagnostics.CreateScope("SnapshotResource.Download");
             scope.Start();
             try
             {
-                var response = await _snapshotResourceSnapshotRestClient.DownloadAsync(Id.Parent.Name, Id.Name, content, cancellationToken).ConfigureAwait(false);
-                var operation = new AppComplianceAutomationArmOperation<DownloadResponse>(new DownloadResponseOperationSource(), _snapshotResourceSnapshotClientDiagnostics, Pipeline, _snapshotResourceSnapshotRestClient.CreateDownloadRequest(Id.Parent.Name, Id.Name, content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = await _snapshotResourceSnapshotsRestClient.DownloadAsync(Id.Parent.Name, Id.Name, content, cancellationToken).ConfigureAwait(false);
+                var operation = new AppComplianceAutomationArmOperation<DownloadResponse>(new DownloadResponseOperationSource(), _snapshotResourceSnapshotsClientDiagnostics, Pipeline, _snapshotResourceSnapshotsRestClient.CreateDownloadRequest(Id.Parent.Name, Id.Name, content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     await operation.WaitForCompletionAsync(cancellationToken).ConfigureAwait(false);
                 return operation;
@@ -198,7 +198,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Snapshot_Download</description>
+        /// <description>Snapshots_Download</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -210,12 +210,12 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         {
             Argument.AssertNotNull(content, nameof(content));
 
-            using var scope = _snapshotResourceSnapshotClientDiagnostics.CreateScope("SnapshotResource.Download");
+            using var scope = _snapshotResourceSnapshotsClientDiagnostics.CreateScope("SnapshotResource.Download");
             scope.Start();
             try
             {
-                var response = _snapshotResourceSnapshotRestClient.Download(Id.Parent.Name, Id.Name, content, cancellationToken);
-                var operation = new AppComplianceAutomationArmOperation<DownloadResponse>(new DownloadResponseOperationSource(), _snapshotResourceSnapshotClientDiagnostics, Pipeline, _snapshotResourceSnapshotRestClient.CreateDownloadRequest(Id.Parent.Name, Id.Name, content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
+                var response = _snapshotResourceSnapshotsRestClient.Download(Id.Parent.Name, Id.Name, content, cancellationToken);
+                var operation = new AppComplianceAutomationArmOperation<DownloadResponse>(new DownloadResponseOperationSource(), _snapshotResourceSnapshotsClientDiagnostics, Pipeline, _snapshotResourceSnapshotsRestClient.CreateDownloadRequest(Id.Parent.Name, Id.Name, content).Request, response, OperationFinalStateVia.AzureAsyncOperation);
                 if (waitUntil == WaitUntil.Completed)
                     operation.WaitForCompletion(cancellationToken);
                 return operation;

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Azure;
 using Azure.Core;
 using Azure.ResourceManager;
+using Azure.ResourceManager.AppComplianceAutomation.Models;
 using Azure.ResourceManager.Resources;
 
 namespace Azure.ResourceManager.AppComplianceAutomation
@@ -52,6 +53,25 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         }
         #endregion
 
+        #region WebhookResource
+        /// <summary>
+        /// Gets an object representing a <see cref="WebhookResource" /> along with the instance operations that can be performed on it but with no data.
+        /// You can use <see cref="WebhookResource.CreateResourceIdentifier" /> to create a <see cref="WebhookResource" /> <see cref="ResourceIdentifier" /> from its components.
+        /// </summary>
+        /// <param name="client"> The <see cref="ArmClient" /> instance the method will execute against. </param>
+        /// <param name="id"> The resource ID of the resource to get. </param>
+        /// <returns> Returns a <see cref="WebhookResource" /> object. </returns>
+        public static WebhookResource GetWebhookResource(this ArmClient client, ResourceIdentifier id)
+        {
+            return client.GetResourceClient(() =>
+            {
+                WebhookResource.ValidateResourceId(id);
+                return new WebhookResource(client, id);
+            }
+            );
+        }
+        #endregion
+
         #region SnapshotResource
         /// <summary>
         /// Gets an object representing a <see cref="SnapshotResource" /> along with the instance operations that can be performed on it but with no data.
@@ -66,6 +86,25 @@ namespace Azure.ResourceManager.AppComplianceAutomation
             {
                 SnapshotResource.ValidateResourceId(id);
                 return new SnapshotResource(client, id);
+            }
+            );
+        }
+        #endregion
+
+        #region EvidenceResource
+        /// <summary>
+        /// Gets an object representing an <see cref="EvidenceResource" /> along with the instance operations that can be performed on it but with no data.
+        /// You can use <see cref="EvidenceResource.CreateResourceIdentifier" /> to create an <see cref="EvidenceResource" /> <see cref="ResourceIdentifier" /> from its components.
+        /// </summary>
+        /// <param name="client"> The <see cref="ArmClient" /> instance the method will execute against. </param>
+        /// <param name="id"> The resource ID of the resource to get. </param>
+        /// <returns> Returns a <see cref="EvidenceResource" /> object. </returns>
+        public static EvidenceResource GetEvidenceResource(this ArmClient client, ResourceIdentifier id)
+        {
+            return client.GetResourceClient(() =>
+            {
+                EvidenceResource.ValidateResourceId(id);
+                return new EvidenceResource(client, id);
             }
             );
         }
@@ -88,7 +127,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -112,7 +151,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         /// </item>
         /// <item>
         /// <term>Operation Id</term>
-        /// <description>Report_Get</description>
+        /// <description>Reports_Get</description>
         /// </item>
         /// </list>
         /// </summary>
@@ -125,6 +164,294 @@ namespace Azure.ResourceManager.AppComplianceAutomation
         public static Response<ReportResource> GetReportResource(this TenantResource tenantResource, string reportName, CancellationToken cancellationToken = default)
         {
             return tenantResource.GetReportResources().Get(reportName, cancellationToken);
+        }
+
+        /// <summary>
+        /// Checks the report name.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/checkNameAvailability</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_CheckNameAvailability</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="body"> NameAvailabilityRequest object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="body"/> is null. </exception>
+        public static async Task<Response<CheckNameAvailabilityResponse>> CheckNameAvailabilityReportAsync(this TenantResource tenantResource, CheckNameAvailabilityRequest body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            return await GetTenantResourceExtensionClient(tenantResource).CheckNameAvailabilityReportAsync(body, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Checks the report name.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/checkNameAvailability</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_CheckNameAvailability</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="body"> NameAvailabilityRequest object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="body"/> is null. </exception>
+        public static Response<CheckNameAvailabilityResponse> CheckNameAvailabilityReport(this TenantResource tenantResource, CheckNameAvailabilityRequest body, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(body, nameof(body));
+
+            return GetTenantResourceExtensionClient(tenantResource).CheckNameAvailabilityReport(body, cancellationToken);
+        }
+
+        /// <summary>
+        /// Get the resource count.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getCollectionCount</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetCollectionCount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="content"> Get collection count's request object. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static async Task<Response<GetCollectionCountResponse>> GetCollectionCountReportAsync(this TenantResource tenantResource, GetCollectionCountContent content, string filter = null, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return await GetTenantResourceExtensionClient(tenantResource).GetCollectionCountReportAsync(content, filter, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the resource count.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getCollectionCount</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetCollectionCount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="content"> Get collection count's request object. </param>
+        /// <param name="filter"> The filter to apply on the operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static Response<GetCollectionCountResponse> GetCollectionCountReport(this TenantResource tenantResource, GetCollectionCountContent content, string filter = null, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return GetTenantResourceExtensionClient(tenantResource).GetCollectionCountReport(content, filter, cancellationToken);
+        }
+
+        /// <summary>
+        /// Get the resource overview status.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getOverviewStatus</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetOverviewStatus</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="content"> Get overview status request object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static async Task<Response<GetOverviewStatusResponse>> GetOverviewStatusReportAsync(this TenantResource tenantResource, GetOverviewStatusContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return await GetTenantResourceExtensionClient(tenantResource).GetOverviewStatusReportAsync(content, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the resource overview status.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/getOverviewStatus</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_GetOverviewStatus</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="content"> Get overview status request object. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static Response<GetOverviewStatusResponse> GetOverviewStatusReport(this TenantResource tenantResource, GetOverviewStatusContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return GetTenantResourceExtensionClient(tenantResource).GetOverviewStatusReport(content, cancellationToken);
+        }
+
+        /// <summary>
+        /// List the storage accounts which are in use by related reports
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/listInUseStorageAccounts</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_ListInUseStorageAccount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="content"> Parameters for listing in use storage accounts operation. If subscription list is null, it will check the user's all subscriptions. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public static async Task<Response<ListInUseStorageAccountsResponse>> GetInUseStorageAccountReportAsync(this TenantResource tenantResource, ListInUseStorageAccountsContent content = null, CancellationToken cancellationToken = default)
+        {
+            return await GetTenantResourceExtensionClient(tenantResource).GetInUseStorageAccountReportAsync(content, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// List the storage accounts which are in use by related reports
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/listInUseStorageAccounts</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Reports_ListInUseStorageAccount</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="content"> Parameters for listing in use storage accounts operation. If subscription list is null, it will check the user's all subscriptions. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        public static Response<ListInUseStorageAccountsResponse> GetInUseStorageAccountReport(this TenantResource tenantResource, ListInUseStorageAccountsContent content = null, CancellationToken cancellationToken = default)
+        {
+            return GetTenantResourceExtensionClient(tenantResource).GetInUseStorageAccountReport(content, cancellationToken);
+        }
+
+        /// <summary>
+        /// Onboard given subscriptions to Microsoft.AppComplianceAutomation provider.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/onboard</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Onboard</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for onboard operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static async Task<ArmOperation<OnboardResponse>> OnboardAsync(this TenantResource tenantResource, WaitUntil waitUntil, OnboardContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return await GetTenantResourceExtensionClient(tenantResource).OnboardAsync(waitUntil, content, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Onboard given subscriptions to Microsoft.AppComplianceAutomation provider.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/onboard</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>Onboard</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for onboard operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static ArmOperation<OnboardResponse> Onboard(this TenantResource tenantResource, WaitUntil waitUntil, OnboardContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return GetTenantResourceExtensionClient(tenantResource).Onboard(waitUntil, content, cancellationToken);
+        }
+
+        /// <summary>
+        /// Trigger evaluation for given resourceIds to get quick compliance result.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/triggerEvaluation</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>TriggerEvaluation</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for trigger evaluation operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static async Task<ArmOperation<TriggerEvaluationResponse>> TriggerEvaluationAsync(this TenantResource tenantResource, WaitUntil waitUntil, TriggerEvaluationContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return await GetTenantResourceExtensionClient(tenantResource).TriggerEvaluationAsync(waitUntil, content, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Trigger evaluation for given resourceIds to get quick compliance result.
+        /// <list type="bullet">
+        /// <item>
+        /// <term>Request Path</term>
+        /// <description>/providers/Microsoft.AppComplianceAutomation/triggerEvaluation</description>
+        /// </item>
+        /// <item>
+        /// <term>Operation Id</term>
+        /// <description>TriggerEvaluation</description>
+        /// </item>
+        /// </list>
+        /// </summary>
+        /// <param name="tenantResource"> The <see cref="TenantResource" /> instance the method will execute against. </param>
+        /// <param name="waitUntil"> <see cref="WaitUntil.Completed"/> if the method should wait to return until the long-running operation has completed on the service; <see cref="WaitUntil.Started"/> if it should return after starting the operation. For more information on long-running operations, please see <see href="https://github.com/Azure/azure-sdk-for-net/blob/main/sdk/core/Azure.Core/samples/LongRunningOperations.md"> Azure.Core Long-Running Operation samples</see>. </param>
+        /// <param name="content"> Parameters for trigger evaluation operation. </param>
+        /// <param name="cancellationToken"> The cancellation token to use. </param>
+        /// <exception cref="ArgumentNullException"> <paramref name="content"/> is null. </exception>
+        public static ArmOperation<TriggerEvaluationResponse> TriggerEvaluation(this TenantResource tenantResource, WaitUntil waitUntil, TriggerEvaluationContent content, CancellationToken cancellationToken = default)
+        {
+            Argument.AssertNotNull(content, nameof(content));
+
+            return GetTenantResourceExtensionClient(tenantResource).TriggerEvaluation(waitUntil, content, cancellationToken);
         }
     }
 }

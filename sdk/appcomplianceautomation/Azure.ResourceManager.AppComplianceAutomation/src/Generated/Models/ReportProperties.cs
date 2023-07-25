@@ -7,7 +7,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Azure.Core;
 
 namespace Azure.ResourceManager.AppComplianceAutomation.Models
@@ -16,22 +15,11 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
     public partial class ReportProperties
     {
         /// <summary> Initializes a new instance of ReportProperties. </summary>
-        /// <param name="timeZone">
-        /// Report collection trigger time's time zone, the available list can be obtained by executing "Get-TimeZone -ListAvailable" in PowerShell.
-        /// An example of valid timezone id is "Pacific Standard Time".
-        /// </param>
-        /// <param name="triggerOn"> Report collection trigger time. </param>
-        /// <param name="resources"> List of resource data. </param>
-        /// <exception cref="ArgumentNullException"> <paramref name="timeZone"/> or <paramref name="resources"/> is null. </exception>
-        public ReportProperties(string timeZone, DateTimeOffset triggerOn, IEnumerable<ResourceMetadata> resources)
+        public ReportProperties()
         {
-            Argument.AssertNotNull(timeZone, nameof(timeZone));
-            Argument.AssertNotNull(resources, nameof(resources));
-
-            TimeZone = timeZone;
-            TriggerOn = triggerOn;
             Subscriptions = new ChangeTrackingList<string>();
-            Resources = resources.ToList();
+            Resources = new ChangeTrackingList<ResourceMetadata>();
+            CertRecords = new ChangeTrackingList<CertSyncRecord>();
         }
 
         /// <summary> Initializes a new instance of ReportProperties. </summary>
@@ -39,7 +27,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
         /// <param name="status"> Report status. </param>
         /// <param name="tenantId"> Report's tenant id. </param>
         /// <param name="reportName"> Report name. </param>
-        /// <param name="offerGuid"> Report offer Guid. </param>
+        /// <param name="offerGuid"> A list of comma-separated offerGuids indicates a series of offerGuids that map to the report. For example, "00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002" and "00000000-0000-0000-0000-000000000003". </param>
         /// <param name="timeZone">
         /// Report collection trigger time's time zone, the available list can be obtained by executing "Get-TimeZone -ListAvailable" in PowerShell.
         /// An example of valid timezone id is "Pacific Standard Time".
@@ -50,8 +38,10 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
         /// <param name="subscriptions"> List of subscription Ids. </param>
         /// <param name="resources"> List of resource data. </param>
         /// <param name="complianceStatus"> Report compliance status. </param>
+        /// <param name="storageInfo"> The information of 'bring your own storage' binding to the report. </param>
+        /// <param name="certRecords"> List of synchronized certification records. </param>
         /// <param name="provisioningState"> Azure lifecycle management. </param>
-        internal ReportProperties(string id, ReportStatus? status, Guid? tenantId, string reportName, string offerGuid, string timeZone, DateTimeOffset triggerOn, DateTimeOffset? nextTriggerOn, DateTimeOffset? lastTriggerOn, IReadOnlyList<string> subscriptions, IList<ResourceMetadata> resources, ReportComplianceStatus complianceStatus, ProvisioningState? provisioningState)
+        internal ReportProperties(string id, ReportStatus? status, Guid? tenantId, string reportName, string offerGuid, string timeZone, DateTimeOffset? triggerOn, DateTimeOffset? nextTriggerOn, DateTimeOffset? lastTriggerOn, IReadOnlyList<string> subscriptions, IList<ResourceMetadata> resources, ReportComplianceStatus complianceStatus, StorageInfo storageInfo, IReadOnlyList<CertSyncRecord> certRecords, ProvisioningState? provisioningState)
         {
             Id = id;
             Status = status;
@@ -65,6 +55,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             Subscriptions = subscriptions;
             Resources = resources;
             ComplianceStatus = complianceStatus;
+            StorageInfo = storageInfo;
+            CertRecords = certRecords;
             ProvisioningState = provisioningState;
         }
 
@@ -76,7 +68,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
         public Guid? TenantId { get; }
         /// <summary> Report name. </summary>
         public string ReportName { get; }
-        /// <summary> Report offer Guid. </summary>
+        /// <summary> A list of comma-separated offerGuids indicates a series of offerGuids that map to the report. For example, "00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002" and "00000000-0000-0000-0000-000000000003". </summary>
         public string OfferGuid { get; set; }
         /// <summary>
         /// Report collection trigger time's time zone, the available list can be obtained by executing "Get-TimeZone -ListAvailable" in PowerShell.
@@ -84,7 +76,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
         /// </summary>
         public string TimeZone { get; set; }
         /// <summary> Report collection trigger time. </summary>
-        public DateTimeOffset TriggerOn { get; set; }
+        public DateTimeOffset? TriggerOn { get; set; }
         /// <summary> Report next collection trigger time. </summary>
         public DateTimeOffset? NextTriggerOn { get; }
         /// <summary> Report last collection trigger time. </summary>
@@ -101,6 +93,10 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             get => ComplianceStatus?.M365;
         }
 
+        /// <summary> The information of 'bring your own storage' binding to the report. </summary>
+        public StorageInfo StorageInfo { get; set; }
+        /// <summary> List of synchronized certification records. </summary>
+        public IReadOnlyList<CertSyncRecord> CertRecords { get; }
         /// <summary> Azure lifecycle management. </summary>
         public ProvisioningState? ProvisioningState { get; }
     }

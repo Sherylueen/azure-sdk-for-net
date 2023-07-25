@@ -21,6 +21,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
             Optional<int> passedCount = default;
             Optional<int> failedCount = default;
             Optional<int> manualCount = default;
+            Optional<int> notApplicableCount = default;
+            Optional<int> pendingCount = default;
             foreach (var property in element.EnumerateObject())
             {
                 if (property.NameEquals("passedCount"u8))
@@ -50,8 +52,26 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
                     manualCount = property.Value.GetInt32();
                     continue;
                 }
+                if (property.NameEquals("notApplicableCount"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    notApplicableCount = property.Value.GetInt32();
+                    continue;
+                }
+                if (property.NameEquals("pendingCount"u8))
+                {
+                    if (property.Value.ValueKind == JsonValueKind.Null)
+                    {
+                        continue;
+                    }
+                    pendingCount = property.Value.GetInt32();
+                    continue;
+                }
             }
-            return new OverviewStatus(Optional.ToNullable(passedCount), Optional.ToNullable(failedCount), Optional.ToNullable(manualCount));
+            return new OverviewStatus(Optional.ToNullable(passedCount), Optional.ToNullable(failedCount), Optional.ToNullable(manualCount), Optional.ToNullable(notApplicableCount), Optional.ToNullable(pendingCount));
         }
     }
 }

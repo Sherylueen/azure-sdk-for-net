@@ -9,7 +9,7 @@ using System;
 
 namespace Azure.ResourceManager.AppComplianceAutomation.Models
 {
-    /// <summary> compliance detailed pdf report. </summary>
+    /// <summary> The detailed compliance pdf report. </summary>
     internal partial class DownloadResponseComplianceDetailedPdfReport
     {
         /// <summary> Initializes a new instance of DownloadResponseComplianceDetailedPdfReport. </summary>
@@ -18,13 +18,13 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Models
         }
 
         /// <summary> Initializes a new instance of DownloadResponseComplianceDetailedPdfReport. </summary>
-        /// <param name="sasUri"> uri of compliance detailed pdf report. </param>
+        /// <param name="sasUri"> The uri of detailed compliance pdf report. </param>
         internal DownloadResponseComplianceDetailedPdfReport(Uri sasUri)
         {
             SasUri = sasUri;
         }
 
-        /// <summary> uri of compliance detailed pdf report. </summary>
+        /// <summary> The uri of detailed compliance pdf report. </summary>
         public Uri SasUri { get; }
     }
 }
