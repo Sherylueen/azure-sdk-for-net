@@ -11,6 +11,7 @@ using Azure.Core;
 using Azure.Identity;
 using Azure.ResourceManager;
 using Azure.ResourceManager.AppComplianceAutomation;
+using Azure.ResourceManager.AppComplianceAutomation.Models;
 
 namespace Azure.ResourceManager.AppComplianceAutomation.Samples
 {
@@ -21,7 +22,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task GetAll_SnapshotsList()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshots_List.json
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshots_List.json
             // this example is just showing the usage of "Snapshots_List" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
@@ -39,11 +40,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
             SnapshotResourceCollection collection = reportResource.GetSnapshotResources();
 
             // invoke the operation and iterate over the result
-            string skipToken = "1";
-            int? top = 100;
-            string reportCreatorTenantId = "00000000-0000-0000-0000-000000000000";
-            string offerGuid = "00000000-0000-0000-0000-000000000000";
-            await foreach (SnapshotResource item in collection.GetAllAsync(skipToken: skipToken, top: top, reportCreatorTenantId: reportCreatorTenantId, offerGuid: offerGuid))
+            SnapshotResourceCollectionGetAllOptions options = new SnapshotResourceCollectionGetAllOptions() { SkipToken = "1", Top = 100, ReportCreatorTenantId = "00000000-0000-0000-0000-000000000000", OfferGuid = "00000000-0000-0000-0000-000000000001" };
+            await foreach (SnapshotResource item in collection.GetAllAsync(options))
             {
                 // the variable item is a resource, you could call other operations on this instance as well
                 // but just for demo, we get its data from this resource instance
@@ -60,8 +58,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Get_SnapshotGet()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_Get.json
-            // this example is just showing the usage of "Snapshot_Get" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_Get.json
+            // this example is just showing the usage of "Snapshots_Get" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -93,8 +91,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Exists_SnapshotGet()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_Get.json
-            // this example is just showing the usage of "Snapshot_Get" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_Get.json
+            // this example is just showing the usage of "Snapshots_Get" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();

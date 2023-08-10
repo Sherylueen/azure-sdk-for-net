@@ -18,13 +18,150 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
 {
     public partial class Sample_ReportResource
     {
+        // Reports_CheckNameAvailability
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task CheckNameAvailabilityReport_ReportsCheckNameAvailability()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_CheckNameAvailability.json
+            // this example is just showing the usage of "Reports_CheckNameAvailability" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this TenantResource created on azure
+            // for more information of creating TenantResource, please refer to the document of TenantResource
+            var tenantResource = client.GetTenants().GetAllAsync().GetAsyncEnumerator().Current;
+
+            // invoke the operation
+            CheckNameAvailabilityRequest body = new CheckNameAvailabilityRequest()
+            {
+                Name = "reportABC",
+                ResourceType = "Microsoft.AppComplianceAutomation/reports",
+            };
+            CheckNameAvailabilityResponse result = await tenantResource.CheckNameAvailabilityReportAsync(body);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
+        // Reports_GetCollectionCount
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task GetCollectionCountReport_ReportsGetCollectionCount()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_GetCollectionCount.json
+            // this example is just showing the usage of "Reports_GetCollectionCount" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this TenantResource created on azure
+            // for more information of creating TenantResource, please refer to the document of TenantResource
+            var tenantResource = client.GetTenants().GetAllAsync().GetAsyncEnumerator().Current;
+
+            // invoke the operation
+            GetCollectionCountContent content = new GetCollectionCountContent()
+            {
+                GetCollectionCountRequestType = "Microsoft.AppComplianceAutomation/reports",
+            };
+            string filter = "Name eq 'Milk'";
+            GetCollectionCountResponse result = await tenantResource.GetCollectionCountReportAsync(content, filter: filter);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
+        // Reports_GetOverviewStatus
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task GetOverviewStatusReport_ReportsGetOverviewStatus()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_GetOverviewStatus.json
+            // this example is just showing the usage of "Reports_GetOverviewStatus" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this TenantResource created on azure
+            // for more information of creating TenantResource, please refer to the document of TenantResource
+            var tenantResource = client.GetTenants().GetAllAsync().GetAsyncEnumerator().Current;
+
+            // invoke the operation
+            GetOverviewStatusContent content = new GetOverviewStatusContent()
+            {
+                GetOverviewStatusRequestType = "Microsoft.AppComplianceAutomation/reports",
+            };
+            GetOverviewStatusResponse result = await tenantResource.GetOverviewStatusReportAsync(content);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
+        // ListInUseStorageAccountsWithSubscriptions
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task GetInUseStorageAccountReport_ListInUseStorageAccountsWithSubscriptions()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/ListInUseStorageAccountsWithSubscriptions.json
+            // this example is just showing the usage of "Reports_ListInUseStorageAccount" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this TenantResource created on azure
+            // for more information of creating TenantResource, please refer to the document of TenantResource
+            var tenantResource = client.GetTenants().GetAllAsync().GetAsyncEnumerator().Current;
+
+            // invoke the operation
+            ListInUseStorageAccountsContent content = new ListInUseStorageAccountsContent()
+            {
+                SubscriptionIds =
+{
+"0000000-0000-0000-0000-000000000001","0000000-0000-0000-0000-000000000002"
+},
+            };
+            ListInUseStorageAccountsResponse result = await tenantResource.GetInUseStorageAccountReportAsync(content: content);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
+        // ListInUseStorageAccountsWithoutSubscriptions
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task GetInUseStorageAccountReport_ListInUseStorageAccountsWithoutSubscriptions()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/ListInUseStorageAccountsWithoutSubscriptions.json
+            // this example is just showing the usage of "Reports_ListInUseStorageAccount" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this TenantResource created on azure
+            // for more information of creating TenantResource, please refer to the document of TenantResource
+            var tenantResource = client.GetTenants().GetAllAsync().GetAsyncEnumerator().Current;
+
+            // invoke the operation
+            ListInUseStorageAccountsContent content = new ListInUseStorageAccountsContent();
+            ListInUseStorageAccountsResponse result = await tenantResource.GetInUseStorageAccountReportAsync(content: content);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
         // Report_Get
         [NUnit.Framework.Test]
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Get_ReportGet()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Report_Get.json
-            // this example is just showing the usage of "Report_Get" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Report_Get.json
+            // this example is just showing the usage of "Reports_Get" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -52,8 +189,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Update_ReportUpdate()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Report_Update.json
-            // this example is just showing the usage of "Report_Update" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Report_Update.json
+            // this example is just showing the usage of "Reports_Update" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -69,18 +206,31 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
             // invoke the operation
             ReportResourcePatch patch = new ReportResourcePatch()
             {
-                Properties = new ReportProperties("GMT Standard Time", DateTimeOffset.Parse("2022-03-04T05:11:56.197Z"), new ResourceMetadata[]
-            {
-new ResourceMetadata("/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.Network/privateEndpoints/myPrivateEndpoint")
-{
-Tags =
-{
-["key1"] = "value1",
-},
-}
-            })
+                Properties = new ReportProperties()
                 {
-                    OfferGuid = "0000",
+                    OfferGuid = "00000000-0000-0000-0000-000000000001,00000000-0000-0000-0000-000000000002",
+                    TimeZone = "GMT Standard Time",
+                    TriggerOn = DateTimeOffset.Parse("2022-03-04T05:00:00.000Z"),
+                    Resources =
+{
+new ResourceMetadata("/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/myResourceGroup/providers/Microsoft.SignalRService/SignalR/mySignalRService")
+{
+ResourceType = "Microsoft.SignalRService/SignalR",
+ResourceOrigin = ResourceOrigin.Azure,
+},new ResourceMetadata("/subscriptions/00000000-0000-0000-0000-000000000000/resourcegroups/acat-aws/providers/microsoft.security/securityconnectors/acatawsconnector/securityentitydata/aws-iam-user-testuser")
+{
+ResourceType = "iam.user",
+ResourceOrigin = ResourceOrigin.AWS,
+AccountId = "000000000000",
+}
+},
+                    StorageInfo = new StorageInfo()
+                    {
+                        SubscriptionId = "00000000-0000-0000-0000-000000000000",
+                        ResourceGroup = "testResourceGroup",
+                        AccountName = "testStorageAccount",
+                        Location = new AzureLocation("East US"),
+                    },
                 },
             };
             ArmOperation<ReportResource> lro = await reportResource.UpdateAsync(WaitUntil.Completed, patch);
@@ -98,8 +248,8 @@ Tags =
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Delete_ReportDelete()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Report_Delete.json
-            // this example is just showing the usage of "Report_Delete" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Report_Delete.json
+            // this example is just showing the usage of "Reports_Delete" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -116,6 +266,135 @@ Tags =
             await reportResource.DeleteAsync(WaitUntil.Completed);
 
             Console.WriteLine($"Succeeded");
+        }
+
+        // Reports_SyncCertRecord
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task SyncCertRecord_ReportsSyncCertRecord()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_SyncCertRecord.json
+            // this example is just showing the usage of "Reports_SyncCertRecord" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this ReportResource created on azure
+            // for more information of creating ReportResource, please refer to the document of ReportResource
+            string reportName = "testReportName";
+            ResourceIdentifier reportResourceId = ReportResource.CreateResourceIdentifier(reportName);
+            ReportResource reportResource = client.GetReportResource(reportResourceId);
+
+            // invoke the operation
+            SyncCertRecordContent content = new SyncCertRecordContent(new CertSyncRecord()
+            {
+                OfferGuid = "00000000-0000-0000-0000-000000000001",
+                CertificationStatus = "CertIngestion",
+                IngestionStatus = "EvidenceResubmitted",
+                Controls =
+{
+new ControlSyncRecord()
+{
+ControlId = "Operational_Security_10",
+ControlStatus = "Approved",
+}
+},
+            });
+            await reportResource.SyncCertRecordAsync(WaitUntil.Completed, content);
+
+            Console.WriteLine($"Succeeded");
+        }
+
+        // Reports_EvidenceCheckNameAvailability
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task NestedResourceCheckNameAvailability_ReportsEvidenceCheckNameAvailability()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_EvidenceCheckNameAvailability.json
+            // this example is just showing the usage of "Reports_NestedResourceCheckNameAvailability" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this ReportResource created on azure
+            // for more information of creating ReportResource, please refer to the document of ReportResource
+            string reportName = "reportABC";
+            ResourceIdentifier reportResourceId = ReportResource.CreateResourceIdentifier(reportName);
+            ReportResource reportResource = client.GetReportResource(reportResourceId);
+
+            // invoke the operation
+            CheckNameAvailabilityRequest body = new CheckNameAvailabilityRequest()
+            {
+                Name = "evidenceABC",
+                ResourceType = "Microsoft.AppComplianceAutomation/reports/evidences",
+            };
+            CheckNameAvailabilityResponse result = await reportResource.NestedResourceCheckNameAvailabilityAsync(body);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
+        // Reports_SnapshotCheckNameAvailability
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task NestedResourceCheckNameAvailability_ReportsSnapshotCheckNameAvailability()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_SnapshotCheckNameAvailability.json
+            // this example is just showing the usage of "Reports_NestedResourceCheckNameAvailability" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this ReportResource created on azure
+            // for more information of creating ReportResource, please refer to the document of ReportResource
+            string reportName = "reportABC";
+            ResourceIdentifier reportResourceId = ReportResource.CreateResourceIdentifier(reportName);
+            ReportResource reportResource = client.GetReportResource(reportResourceId);
+
+            // invoke the operation
+            CheckNameAvailabilityRequest body = new CheckNameAvailabilityRequest()
+            {
+                Name = "snapshotABC",
+                ResourceType = "Microsoft.AppComplianceAutomation/reports/snapshots",
+            };
+            CheckNameAvailabilityResponse result = await reportResource.NestedResourceCheckNameAvailabilityAsync(body);
+
+            Console.WriteLine($"Succeeded: {result}");
+        }
+
+        // Reports_WebhookCheckNameAvailability
+        [NUnit.Framework.Test]
+        [NUnit.Framework.Ignore("Only verifying that the sample builds")]
+        public async Task NestedResourceCheckNameAvailability_ReportsWebhookCheckNameAvailability()
+        {
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Reports_WebhookCheckNameAvailability.json
+            // this example is just showing the usage of "Reports_NestedResourceCheckNameAvailability" operation, for the dependent resources, they will have to be created separately.
+
+            // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
+            TokenCredential cred = new DefaultAzureCredential();
+            // authenticate your client
+            ArmClient client = new ArmClient(cred);
+
+            // this example assumes you already have this ReportResource created on azure
+            // for more information of creating ReportResource, please refer to the document of ReportResource
+            string reportName = "reportABC";
+            ResourceIdentifier reportResourceId = ReportResource.CreateResourceIdentifier(reportName);
+            ReportResource reportResource = client.GetReportResource(reportResourceId);
+
+            // invoke the operation
+            CheckNameAvailabilityRequest body = new CheckNameAvailabilityRequest()
+            {
+                Name = "webhookABC",
+                ResourceType = "Microsoft.AppComplianceAutomation/reports/webhooks",
+            };
+            CheckNameAvailabilityResponse result = await reportResource.NestedResourceCheckNameAvailabilityAsync(body);
+
+            Console.WriteLine($"Succeeded: {result}");
         }
     }
 }

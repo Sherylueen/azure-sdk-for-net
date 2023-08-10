@@ -49,16 +49,14 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Tests.Tests
             ReportResourceCollection reports = tenant.GetReportResources();
 
             // create report
-            List<ResourceMetadata> resources = new List<ResourceMetadata>();
-            Dictionary<string, string> tags = new Dictionary<string, string>();
-            resources.Add(new ResourceMetadata(
-                "/subscriptions/f744fbde-a95f-437e-8fcf-38f9324e3d9c/resourceGroups/sdk-test/providers/Microsoft.Storage/storageAccounts/sdkteststorageaccount",
-                "microsoft.storage/storageaccounts",
-                "StorageV2",
-                "sdkteststorageaccount",
-                tags));
+            ResourceMetadata resourceMetadata = new ResourceMetadata("/subscriptions/f744fbde-a95f-437e-8fcf-38f9324e3d9c/resourceGroups/sdk-test/providers/Microsoft.Storage/storageAccounts/sdkteststorageaccount");
+            resourceMetadata.ResourceType = "microsoft.storage/storageaccounts";
+            resourceMetadata.ResourceOrigin = "Azure";
             DateTime univDateTime = new DateTime(2022, 01, 01, 0, 0, 0, DateTimeKind.Utc);
-            ReportProperties properties = new ReportProperties("GMT Standard Time", new DateTimeOffset(univDateTime), resources);
+            ReportProperties properties = new ReportProperties();
+            properties.TriggerOn = new DateTimeOffset(univDateTime);
+            properties.Resources.Add(resourceMetadata);
+            properties.TimeZone = "China Standard Time";
             ArmOperation<ReportResource> response = await reports.CreateOrUpdateAsync(WaitUntil.Completed, reportName, new ReportResourceData(properties));
 
             // get report

@@ -23,8 +23,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Get_SnapshotGet()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_Get.json
-            // this example is just showing the usage of "Snapshot_Get" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_Get.json
+            // this example is just showing the usage of "Snapshots_Get" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -53,8 +53,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Download_SnapshotDownloadComplianceDetailedPdfReport()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_ComplianceDetailedPdfReport_Download.json
-            // this example is just showing the usage of "Snapshot_Download" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_ComplianceDetailedPdfReport_Download.json
+            // this example is just showing the usage of "Snapshots_Download" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -85,8 +85,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Download_SnapshotDownloadCompliancePdfReport()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_CompliancePdfReport_Download.json
-            // this example is just showing the usage of "Snapshot_Download" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_CompliancePdfReport_Download.json
+            // this example is just showing the usage of "Snapshots_Download" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -104,7 +104,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
             SnapshotDownloadContent content = new SnapshotDownloadContent(DownloadType.CompliancePdfReport)
             {
                 ReportCreatorTenantId = "00000000-0000-0000-0000-000000000000",
-                OfferGuid = "00000000-0000-0000-0000-000000000000",
+                OfferGuid = "00000000-0000-0000-0000-000000000001",
             };
             ArmOperation<DownloadResponse> lro = await snapshotResource.DownloadAsync(WaitUntil.Completed, content);
             DownloadResponse result = lro.Value;
@@ -117,8 +117,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Download_SnapshotDownloadComplianceReport()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_ComplianceReport_Download.json
-            // this example is just showing the usage of "Snapshot_Download" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_ComplianceReport_Download.json
+            // this example is just showing the usage of "Snapshots_Download" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -136,7 +136,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
             SnapshotDownloadContent content = new SnapshotDownloadContent(DownloadType.ComplianceReport)
             {
                 ReportCreatorTenantId = "00000000-0000-0000-0000-000000000000",
-                OfferGuid = "00000000-0000-0000-0000-000000000000",
+                OfferGuid = "00000000-0000-0000-0000-000000000001",
             };
             ArmOperation<DownloadResponse> lro = await snapshotResource.DownloadAsync(WaitUntil.Completed, content);
             DownloadResponse result = lro.Value;
@@ -149,8 +149,8 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
         [NUnit.Framework.Ignore("Only verifying that the sample builds")]
         public async Task Download_SnapshotDownloadResourceList()
         {
-            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2022-11-16-preview/examples/Snapshot_ResourceList_Download.json
-            // this example is just showing the usage of "Snapshot_Download" operation, for the dependent resources, they will have to be created separately.
+            // Generated from example definition: specification/appcomplianceautomation/resource-manager/Microsoft.AppComplianceAutomation/preview/2023-02-15-preview/examples/Snapshot_ResourceList_Download.json
+            // this example is just showing the usage of "Snapshots_Download" operation, for the dependent resources, they will have to be created separately.
 
             // get your azure access token, for more details of how Azure SDK get your access token, please refer to https://learn.microsoft.com/en-us/dotnet/azure/sdk/authentication?tabs=command-line
             TokenCredential cred = new DefaultAzureCredential();
@@ -168,7 +168,7 @@ namespace Azure.ResourceManager.AppComplianceAutomation.Samples
             SnapshotDownloadContent content = new SnapshotDownloadContent(DownloadType.ResourceList)
             {
                 ReportCreatorTenantId = "00000000-0000-0000-0000-000000000000",
-                OfferGuid = "00000000-0000-0000-0000-000000000000",
+                OfferGuid = "00000000-0000-0000-0000-000000000001",
             };
             ArmOperation<DownloadResponse> lro = await snapshotResource.DownloadAsync(WaitUntil.Completed, content);
             DownloadResponse result = lro.Value;

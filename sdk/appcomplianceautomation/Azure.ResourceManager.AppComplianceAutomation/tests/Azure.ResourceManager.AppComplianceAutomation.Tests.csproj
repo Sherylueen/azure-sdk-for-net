@@ -1,8 +1,29 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <Folder Include="SessionRecords\SnapshotTests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\samples\Azure.ResourceManager.AppComplianceAutomation.Samples.csproj" />
     <ProjectReference Include="..\src\Azure.ResourceManager.AppComplianceAutomation.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="SessionRecords\SnapshotTests\" />
+    <Reference Include="Azure.Core.TestFramework">
+      <HintPath>..\..\..\..\artifacts\bin\Azure.Core.TestFramework\Debug\net7.0\Azure.Core.TestFramework.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="Moq" Version="4.18.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="NUnit" Version="3.13.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="NUnit3TestAdapter" Version="4.5.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Update="SauceControl.InheritDoc" Version="1.3.0" />
   </ItemGroup>
 </Project>

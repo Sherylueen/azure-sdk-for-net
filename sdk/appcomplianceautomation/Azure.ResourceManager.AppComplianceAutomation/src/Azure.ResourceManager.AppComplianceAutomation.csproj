@@ -5,4 +5,7 @@
     <Description>Microsoft Azure Resource Manager client SDK for Azure resource provider Microsoft.AppComplianceAutomation.</Description>
     <PackageTags>azure;management;arm;resource manager;appcomplianceautomation</PackageTags>
   </PropertyGroup>
+  <ItemGroup>
+        <PackageReference Update="System.Runtime" />
+  </ItemGroup>
 </Project>
